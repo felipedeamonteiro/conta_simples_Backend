@@ -1,5 +1,7 @@
 import 'reflect-metadata';
 import { getRepository } from 'typeorm';
+import { hash } from 'bcryptjs';
+
 import Company from '../models/Company';
 
 interface IRequest {
@@ -26,10 +28,12 @@ class CreateCompanyService {
       throw new Error('Email address already used.');
     }
 
+    const hashedPassword = await hash(password, 8);
+
     const company = companyRepository.create({
       name,
       email,
-      password,
+      password: hashedPassword,
       company_type,
     });
 

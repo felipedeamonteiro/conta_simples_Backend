@@ -17,6 +17,8 @@ companiesRoutes.post('/', async (request, response) => {
       company_type,
     });
 
+    delete company.password;
+
     return response.json(company);
   } catch (err) {
     return response.status(400).json({ error: err.message });
