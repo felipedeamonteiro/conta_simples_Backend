@@ -1,11 +1,12 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export default class CreateLimit1602818562106 implements MigrationInterface {
+export default class CreateCreditCard1602882166106
+  implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
     await queryRunner.createTable(
       new Table({
-        name: 'limit',
+        name: 'credit_cards',
         columns: [
           {
             name: 'id',
@@ -35,8 +36,14 @@ export default class CreateLimit1602818562106 implements MigrationInterface {
             type: 'int',
           },
           {
-            name: 'is_debit',
-            type: 'boolean',
+            name: 'created_at',
+            type: 'timestamp',
+            default: 'now()',
+          },
+          {
+            name: 'updated_at',
+            type: 'timestamp',
+            default: 'now()',
           },
         ],
         foreignKeys: [
@@ -54,6 +61,6 @@ export default class CreateLimit1602818562106 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('limit');
+    await queryRunner.dropTable('credit_cards');
   }
 }
