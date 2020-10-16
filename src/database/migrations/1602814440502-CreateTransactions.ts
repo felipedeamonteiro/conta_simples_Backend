@@ -1,12 +1,12 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export default class CreateCompanies1602790592678
+export default class CreateTransactions1602814440502
   implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
     await queryRunner.createTable(
       new Table({
-        name: 'companies',
+        name: 'transactions',
         columns: [
           {
             name: 'id',
@@ -16,20 +16,40 @@ export default class CreateCompanies1602790592678
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'name',
+            name: 'company_id',
+            type: 'uuid',
+          },
+          {
+            name: 'title',
             type: 'varchar',
           },
           {
-            name: 'email',
+            name: 'description',
             type: 'varchar',
-            isUnique: true,
+            isNullable: true,
           },
           {
-            name: 'password',
+            name: 'transaction_type',
             type: 'varchar',
           },
           {
-            name: 'company_type',
+            name: 'card_number',
+            type: 'varchar',
+          },
+          {
+            name: 'currency',
+            type: 'varchar',
+          },
+          {
+            name: 'total_value',
+            type: 'varchar',
+          },
+          {
+            name: 'instalments',
+            type: 'int',
+          },
+          {
+            name: 'instalment_value',
             type: 'varchar',
           },
           {
@@ -43,11 +63,21 @@ export default class CreateCompanies1602790592678
             default: 'now()',
           },
         ],
+        foreignKeys: [
+          {
+            name: 'CompanyTransaction',
+            referencedTableName: 'companies',
+            referencedColumnNames: ['id'],
+            columnNames: ['company_id'],
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE',
+          },
+        ],
       }),
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('companies');
+    await queryRunner.dropTable('transactions');
   }
 }
