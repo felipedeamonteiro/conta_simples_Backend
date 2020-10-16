@@ -6,8 +6,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('company_tokens')
-class Limit {
+@Entity('accounts')
+class Account {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -15,16 +15,10 @@ class Limit {
   company_id: string;
 
   @Column('decimal')
-  total_limit: number;
-
-  @Column('decimal')
-  current_limit: number;
+  balance: number;
 
   @Column('int')
-  credit_card_number: number;
-
-  @Column()
-  is_debit: boolean;
+  debit_card_number: number;
 
   @CreateDateColumn()
   created_at: Date;
@@ -33,4 +27,4 @@ class Limit {
   updated_at: Date;
 }
 
-export default Limit;
+export default Account;

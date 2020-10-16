@@ -6,8 +6,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('balance')
-class Balance {
+@Entity('credit_cards')
+class CreditCard {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -15,10 +15,13 @@ class Balance {
   company_id: string;
 
   @Column('decimal')
-  balance: number;
+  total_limit: number;
+
+  @Column('decimal')
+  current_limit: number;
 
   @Column('int')
-  debit_card_number: number;
+  credit_card_number: number;
 
   @CreateDateColumn()
   created_at: Date;
@@ -27,4 +30,4 @@ class Balance {
   updated_at: Date;
 }
 
-export default Balance;
+export default CreditCard;
