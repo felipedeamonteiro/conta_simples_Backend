@@ -1,12 +1,11 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export default class CreateTransactions1602814440502
-  implements MigrationInterface {
+export default class CreateLimit1602818562106 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
     await queryRunner.createTable(
       new Table({
-        name: 'transactions',
+        name: 'limit',
         columns: [
           {
             name: 'id',
@@ -20,56 +19,25 @@ export default class CreateTransactions1602814440502
             type: 'uuid',
           },
           {
-            name: 'title',
+            name: 'total_limit',
             type: 'varchar',
           },
           {
-            name: 'date',
-            type: 'timestamp',
-          },
-          {
-            name: 'description',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'transaction_type',
+            name: 'current_limit',
             type: 'varchar',
           },
           {
-            name: 'card_number',
+            name: 'credit_card_number',
             type: 'varchar',
           },
           {
-            name: 'currency',
-            type: 'varchar',
-          },
-          {
-            name: 'total_value',
-            type: 'varchar',
-          },
-          {
-            name: 'instalments',
-            type: 'int',
-          },
-          {
-            name: 'instalment_value',
-            type: 'varchar',
-          },
-          {
-            name: 'created_at',
-            type: 'timestamp',
-            default: 'now()',
-          },
-          {
-            name: 'updated_at',
-            type: 'timestamp',
-            default: 'now()',
+            name: 'is_debit',
+            type: 'boolean',
           },
         ],
         foreignKeys: [
           {
-            name: 'CompanyTransaction',
+            name: 'CreditCardLimit',
             referencedTableName: 'companies',
             referencedColumnNames: ['id'],
             columnNames: ['company_id'],
@@ -82,6 +50,6 @@ export default class CreateTransactions1602814440502
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('transactions');
+    await queryRunner.dropTable('limit');
   }
 }

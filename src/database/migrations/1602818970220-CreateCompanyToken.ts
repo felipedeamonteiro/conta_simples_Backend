@@ -1,12 +1,11 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export default class CreateTransactions1602814440502
+export default class CreateCompanyToken1602818970220
   implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
     await queryRunner.createTable(
       new Table({
-        name: 'transactions',
+        name: 'company_tokens',
         columns: [
           {
             name: 'id',
@@ -16,45 +15,14 @@ export default class CreateTransactions1602814440502
             default: 'uuid_generate_v4()',
           },
           {
+            name: 'token',
+            type: 'uuid',
+            generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()',
+          },
+          {
             name: 'company_id',
             type: 'uuid',
-          },
-          {
-            name: 'title',
-            type: 'varchar',
-          },
-          {
-            name: 'date',
-            type: 'timestamp',
-          },
-          {
-            name: 'description',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'transaction_type',
-            type: 'varchar',
-          },
-          {
-            name: 'card_number',
-            type: 'varchar',
-          },
-          {
-            name: 'currency',
-            type: 'varchar',
-          },
-          {
-            name: 'total_value',
-            type: 'varchar',
-          },
-          {
-            name: 'instalments',
-            type: 'int',
-          },
-          {
-            name: 'instalment_value',
-            type: 'varchar',
           },
           {
             name: 'created_at',
@@ -69,7 +37,7 @@ export default class CreateTransactions1602814440502
         ],
         foreignKeys: [
           {
-            name: 'CompanyTransaction',
+            name: 'TokenCompany',
             referencedTableName: 'companies',
             referencedColumnNames: ['id'],
             columnNames: ['company_id'],
@@ -82,6 +50,6 @@ export default class CreateTransactions1602814440502
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('transactions');
+    await queryRunner.dropTable('company_tokens');
   }
 }
