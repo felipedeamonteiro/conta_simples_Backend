@@ -20,15 +20,19 @@ export default class CreateLimit1602818562106 implements MigrationInterface {
           },
           {
             name: 'total_limit',
-            type: 'varchar',
+            type: 'decimal',
+            precision: 10,
+            scale: 2,
           },
           {
             name: 'current_limit',
-            type: 'varchar',
+            type: 'decimal',
+            precision: 10,
+            scale: 2,
           },
           {
             name: 'credit_card_number',
-            type: 'varchar',
+            type: 'int',
           },
           {
             name: 'is_debit',

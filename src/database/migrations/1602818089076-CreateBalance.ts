@@ -20,11 +20,13 @@ export default class CreateBalance1602818089076 implements MigrationInterface {
           },
           {
             name: 'balance',
-            type: 'varchar',
+            type: 'decimal',
+            precision: 10,
+            scale: 2,
           },
           {
             name: 'debit_card_number',
-            type: 'varchar',
+            type: 'int',
           },
         ],
         foreignKeys: [

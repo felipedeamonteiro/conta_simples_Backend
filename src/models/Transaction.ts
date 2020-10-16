@@ -4,7 +4,11 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+
+import Company from './Company';
 
 @Entity('company_tokens')
 class Transaction {
@@ -14,32 +18,36 @@ class Transaction {
   @Column()
   company_id: string;
 
+  @ManyToOne(() => Company)
+  @JoinColumn({ name: 'company_id' })
+  company: Company;
+
   @Column()
   title: string;
 
-  @Column()
+  @Column('timestamp with time zone')
   date: Date;
 
   @Column()
   description: string;
 
   @Column()
-  transaction_type: string;
+  transaction_type: 'Credit' | 'Debit' | 'Income';
 
-  @Column()
-  card_number: string;
+  @Column('int')
+  card_number: number;
 
   @Column()
   currency: string;
 
-  @Column()
-  total_value: string;
+  @Column('decimal')
+  total_value: number;
 
-  @Column()
+  @Column('int')
   instalments: number;
 
-  @Column()
-  instalment_value: string;
+  @Column('decimal')
+  instalment_value: number | null;
 
   @CreateDateColumn()
   created_at: Date;

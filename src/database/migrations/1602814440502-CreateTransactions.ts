@@ -38,7 +38,7 @@ export default class CreateTransactions1602814440502
           },
           {
             name: 'card_number',
-            type: 'varchar',
+            type: 'int',
           },
           {
             name: 'currency',
@@ -46,7 +46,9 @@ export default class CreateTransactions1602814440502
           },
           {
             name: 'total_value',
-            type: 'varchar',
+            type: 'decimal',
+            precision: 10,
+            scale: 2,
           },
           {
             name: 'instalments',
@@ -54,7 +56,9 @@ export default class CreateTransactions1602814440502
           },
           {
             name: 'instalment_value',
-            type: 'varchar',
+            type: 'decimal',
+            precision: 10,
+            scale: 2,
           },
           {
             name: 'created_at',

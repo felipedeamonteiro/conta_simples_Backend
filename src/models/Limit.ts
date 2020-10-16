@@ -14,14 +14,14 @@ class Limit {
   @Column()
   company_id: string;
 
-  @Column()
-  total_limit: string;
+  @Column('decimal')
+  total_limit: number;
 
-  @Column()
-  current_limit: string;
+  @Column('decimal')
+  current_limit: number;
 
-  @Column()
-  credit_card_number: string;
+  @Column('int')
+  credit_card_number: number;
 
   @Column()
   is_debit: boolean;

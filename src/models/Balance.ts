@@ -14,11 +14,11 @@ class Balance {
   @Column()
   company_id: string;
 
-  @Column()
-  balance: string;
+  @Column('decimal')
+  balance: number;
 
-  @Column()
-  debit_card_number: string;
+  @Column('int')
+  debit_card_number: number;
 
   @CreateDateColumn()
   created_at: Date;

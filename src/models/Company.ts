@@ -21,7 +21,7 @@ class Company {
   password: string;
 
   @Column()
-  company_type: string;
+  company_type: 'MEI' | 'ME' | 'Startup';
 
   @CreateDateColumn()
   created_at: Date;
