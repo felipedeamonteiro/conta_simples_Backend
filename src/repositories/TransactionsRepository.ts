@@ -15,8 +15,6 @@ class TransactionRepository extends Repository<Transaction> {
 
     return findTransaction || null;
   }
-
-  public async getBalance();
 }
 
 export default TransactionRepository;

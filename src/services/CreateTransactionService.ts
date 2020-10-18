@@ -1,11 +1,12 @@
-import { getCustomRepository } from 'typeorm';
+import { getCustomRepository, getRepository } from 'typeorm';
 
 import Transaction from '../models/Transaction';
-import Company from '../models/Company';
+import Account from '../models/Account';
 
 import TransactionRepository from '../repositories/TransactionsRepository';
 
 interface IRequest {
+  company_id: string;
   title: string;
   description?: string;
   card_number: string;
@@ -18,6 +19,7 @@ interface IRequest {
 
 class CreateTransactionService {
   public async execute({
+    company_id,
     title,
     description,
     card_number,
@@ -28,7 +30,9 @@ class CreateTransactionService {
     date,
   }: IRequest): Promise<Transaction> {
     const transactionRepository = getCustomRepository(TransactionRepository);
-    let instalment_value: string | null = null;
+    const accountRepository = getCustomRepository(Account);
+
+    const balance = accountRepository.getBalance(company_id);
 
     if (transaction_type === 'Credit' && instalments > 1) {
       instalment_value = (Number(total_value) / instalments).toString;
