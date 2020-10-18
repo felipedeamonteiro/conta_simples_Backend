@@ -1,6 +1,13 @@
 import { Router } from 'express';
 
-import CreateCompanyService from '../services/CreateCompanyService';
+import CreateCompanyService from '../services/CompanyServices/CreateCompanyService';
+
+interface ICompanyHere {
+  name: string;
+  email: string;
+  password?: string;
+  company_type: 'MEI' | 'ME' | 'Startup';
+}
 
 const companiesRoutes = Router();
 
@@ -10,7 +17,7 @@ companiesRoutes.post('/', async (request, response) => {
 
     const createCompany = new CreateCompanyService();
 
-    const company = await createCompany.execute({
+    const company: ICompanyHere = await createCompany.execute({
       name,
       email,
       password,

@@ -1,9 +1,10 @@
-import { getCustomRepository, getRepository } from 'typeorm';
+import { getCustomRepository } from 'typeorm';
 
-import Transaction from '../models/Transaction';
-import Account from '../models/Account';
+import Transaction from '../../models/Transaction';
+import Account from '../../models/Account';
 
-import TransactionRepository from '../repositories/TransactionsRepository';
+import TransactionRepository from '../../repositories/TransactionsRepository';
+import AccountRepository from '../../repositories/AccountsRepository';
 
 interface IRequest {
   company_id: string;
@@ -30,15 +31,19 @@ class CreateTransactionService {
     date,
   }: IRequest): Promise<Transaction> {
     const transactionRepository = getCustomRepository(TransactionRepository);
-    const accountRepository = getCustomRepository(Account);
+    const accountRepository = getCustomRepository(AccountRepository);
 
-    const balance = accountRepository.getBalance(company_id);
+    const account = accountRepository.findOne({ where: { company_id } });
 
     if (transaction_type === 'Credit' && instalments > 1) {
       instalment_value = (Number(total_value) / instalments).toString;
     }
 
+    if (transaction_type === 'Income') {
+    }
+
     const transaction = transactionRepository.create({
+      company_id,
       title,
       description,
       card_number,

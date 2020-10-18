@@ -2,7 +2,7 @@ import { getRepository } from 'typeorm';
 import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 
-import Company from '../models/Company';
+import Company from '../../models/Company';
 
 interface IRequest {
   email: string;
@@ -18,7 +18,9 @@ class AuthenticateCompanyService {
   public async execute({ email, password }: IRequest): Promise<IResponse> {
     const companyRepository = getRepository(Company);
 
-    const company = await companyRepository.findOne({ where: { email } });
+    const company: Company | undefined = await companyRepository.findOne({
+      where: { email },
+    });
 
     if (!company) {
       throw new Error('Incorrect email/password combination');

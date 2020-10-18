@@ -17,9 +17,6 @@ class Account {
   @Column('decimal')
   balance: number;
 
-  @Column('int')
-  debit_card_number: number;
-
   @CreateDateColumn()
   created_at: Date;
 

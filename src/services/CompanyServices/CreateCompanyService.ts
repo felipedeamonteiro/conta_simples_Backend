@@ -2,13 +2,13 @@ import 'reflect-metadata';
 import { getRepository } from 'typeorm';
 import { hash } from 'bcryptjs';
 
-import Company from '../models/Company';
+import Company from '../../models/Company';
 
 interface IRequest {
   name: string;
   email: string;
   password: string;
-  company_type: string;
+  company_type: 'MEI' | 'ME' | 'Startup';
 }
 
 class CreateCompanyService {
