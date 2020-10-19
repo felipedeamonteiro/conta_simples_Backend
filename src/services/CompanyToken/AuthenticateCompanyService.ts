@@ -1,6 +1,7 @@
 import { getRepository } from 'typeorm';
 import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
+import authConfig from '../../config/auth';
 
 import Company from '../../models/Company';
 
@@ -10,7 +11,7 @@ interface IRequest {
 }
 
 interface IResponse {
-  company: Company | undefined;
+  company: Company;
   token: string;
 }
 
@@ -18,7 +19,7 @@ class AuthenticateCompanyService {
   public async execute({ email, password }: IRequest): Promise<IResponse> {
     const companyRepository = getRepository(Company);
 
-    const company = await companyRepository.findOne({
+    const company: Company | undefined = await companyRepository.findOne({
       where: { email },
     });
 
@@ -32,9 +33,11 @@ class AuthenticateCompanyService {
       throw new Error('Incorrect email/password combination');
     }
 
-    const token = sign({}, 'e68cb4131836d90836be7222c3adbf9d', {
+    const { secret, expiresIn } = authConfig.jwt;
+
+    const token = sign({}, secret, {
       subject: company.id,
-      expiresIn: '1d',
+      expiresIn,
     });
 
     return {
