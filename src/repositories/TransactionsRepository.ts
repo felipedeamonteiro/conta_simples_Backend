@@ -8,12 +8,12 @@ class TransactionRepository extends Repository<Transaction> {
    */
   public async FindTransactionBySameCard(
     card_number: string,
-  ): Promise<Transaction[] | null> {
+  ): Promise<Transaction[] | undefined> {
     const findTransaction = await this.find({
       where: { card_number },
     });
 
-    return findTransaction || null;
+    return findTransaction || undefined;
   }
 }
 

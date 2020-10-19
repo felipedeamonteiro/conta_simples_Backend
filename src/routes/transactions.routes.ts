@@ -52,14 +52,14 @@ transactionsRouter.get('/', async (request, response) => {
   const company_id = request.company.id;
   const { transactionType } = request.body;
 
-  const transaction = async (): Promise<Transaction[] | null | undefined> => {
+  const transactionFunc = async (): Promise<Transaction[] | undefined> => {
     switch (transactionType) {
       case 'Debit':
         const debitTransactions = await transactionRepository.find({
           where: { company_id, transaction_type: 'Debit' },
         });
         if (!debitTransactions) {
-          return null;
+          return undefined;
         }
         return debitTransactions;
       case 'Credit':
@@ -67,7 +67,7 @@ transactionsRouter.get('/', async (request, response) => {
           where: { company_id, transaction_type: 'Credit' },
         });
         if (!creditTransactions) {
-          return null;
+          return undefined;
         }
         return creditTransactions;
       case 'Income':
@@ -75,7 +75,7 @@ transactionsRouter.get('/', async (request, response) => {
           where: { company_id, transaction_type: 'Income' },
         });
         if (!incomeTransactions) {
-          return null;
+          return undefined;
         }
         return incomeTransactions;
       case 'Cards':
@@ -83,13 +83,15 @@ transactionsRouter.get('/', async (request, response) => {
           where: { company_id, transaction_type: 'Credit' || 'Debit' },
         });
         if (!cardsTransactions) {
-          return null;
+          return undefined;
         }
         return cardsTransactions;
       default:
-        return null;
+        return undefined;
     }
   };
+  const transaction = await transactionFunc();
+  console.log(transaction);
 
   return response.json(transaction);
 });

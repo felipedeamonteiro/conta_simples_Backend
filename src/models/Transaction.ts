@@ -47,7 +47,7 @@ class Transaction {
   instalments: number;
 
   @Column('decimal')
-  instalment_value: number | null;
+  instalment_value: number | undefined;
 
   @CreateDateColumn()
   created_at: Date;
