@@ -11,7 +11,7 @@ interface IRequest {
 }
 
 class CreateCompanyService {
-  public async execute({ company_id, balance }: IRequest): Promise<Account> {
+  public async execute({ company_id }: IRequest): Promise<Account> {
     const accountRepository = getCustomRepository(AccountRepository);
 
     const checkAccountExists = await accountRepository.findOne({
@@ -24,7 +24,7 @@ class CreateCompanyService {
 
     const account = accountRepository.create({
       company_id,
-      balance,
+      balance: 0,
     });
 
     await accountRepository.save(account);

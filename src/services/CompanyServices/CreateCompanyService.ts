@@ -1,8 +1,9 @@
 import 'reflect-metadata';
-import { getRepository } from 'typeorm';
+import { getCustomRepository, getRepository } from 'typeorm';
 import { hash } from 'bcryptjs';
 
 import Company from '../../models/Company';
+import AccountsRepository from '../../repositories/AccountsRepository';
 
 interface IRequest {
   name: string;
@@ -19,6 +20,7 @@ class CreateCompanyService {
     company_type,
   }: IRequest): Promise<Company> {
     const companyRepository = getRepository(Company);
+    const accountRepository = getCustomRepository(AccountsRepository);
 
     const checkCompanyExists = await companyRepository.findOne({
       where: { email },
@@ -38,6 +40,15 @@ class CreateCompanyService {
     });
 
     await companyRepository.save(company);
+
+    const { id } = company;
+
+    const account = accountRepository.create({
+      company_id: id,
+      balance: 0,
+    });
+
+    await accountRepository.save(account);
 
     return company;
   }
