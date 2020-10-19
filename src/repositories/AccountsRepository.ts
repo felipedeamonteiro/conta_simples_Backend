@@ -62,6 +62,11 @@ class AccountRepository extends Repository<Account> {
             });
             break;
           case 'Debit':
+            if (account_total < transaction.total_value) {
+              throw new Error(
+                'You do not have enough balance to make this transaction.',
+              );
+            }
             accumulator.debit_outcome += transaction.total_value;
             accumulator.account_total -= accumulator.debit_outcome;
             this.save({
@@ -69,6 +74,11 @@ class AccountRepository extends Repository<Account> {
             });
             break;
           case 'Credit':
+            if (current_limit < transaction.total_value) {
+              throw new Error(
+                'You do not have enough limit to make this transaction.',
+              );
+            }
             accumulator.credit_outcome += transaction.total_value;
             accumulator.current_limit -= accumulator.credit_outcome;
             if (creditCard) {

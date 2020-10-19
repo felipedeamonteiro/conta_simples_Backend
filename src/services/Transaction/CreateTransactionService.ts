@@ -48,6 +48,8 @@ class CreateTransactionService {
     const parsedDate = parseISO(date);
 
     if (instalments && transaction_type === 'Credit' && instalments > 1) {
+      await accountRepository.getBalance(company_id, card_number);
+
       const transaction = transactionRepository.create({
         company_id,
         title,
@@ -61,11 +63,11 @@ class CreateTransactionService {
         instalment_value: total_value / instalments,
       });
 
-      await accountRepository.getBalance(company_id, card_number);
-
       await transactionRepository.save(transaction);
       return transaction;
     }
+
+    await accountRepository.getBalance(company_id, card_number);
 
     const transaction = transactionRepository.create({
       company_id,
@@ -79,8 +81,6 @@ class CreateTransactionService {
       instalments,
       instalment_value: 0,
     });
-
-    await accountRepository.getBalance(company_id, card_number);
 
     await transactionRepository.save(transaction);
     return transaction;
