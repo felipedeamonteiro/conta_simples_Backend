@@ -15,8 +15,8 @@ transactionsRouter.use(ensureAuthenticated);
 
 transactionsRouter.post('/', async (request, response) => {
   try {
+    const company_id = request.company.id;
     const {
-      company_id,
       title,
       description,
       card_number,
@@ -50,7 +50,7 @@ transactionsRouter.post('/', async (request, response) => {
 transactionsRouter.get('/', async (request, response) => {
   const transactionRepository = getCustomRepository(TransactionsRepository);
   const company_id = request.company.id;
-  const transactionType = request.body;
+  const { transactionType } = request.body;
 
   const transaction = async (): Promise<Transaction[] | null | undefined> => {
     switch (transactionType) {
