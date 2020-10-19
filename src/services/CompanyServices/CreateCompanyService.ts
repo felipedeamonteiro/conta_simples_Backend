@@ -20,7 +20,7 @@ class CreateCompanyService {
   }: IRequest): Promise<Company> {
     const companyRepository = getRepository(Company);
 
-    const checkCompanyExists = await getRepository(Company).findOne({
+    const checkCompanyExists = await companyRepository.findOne({
       where: { email },
     });
 

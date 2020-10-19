@@ -10,7 +10,7 @@ interface IRequest {
 }
 
 interface IResponse {
-  company: Company;
+  company: Company | undefined;
   token: string;
 }
 
@@ -18,7 +18,7 @@ class AuthenticateCompanyService {
   public async execute({ email, password }: IRequest): Promise<IResponse> {
     const companyRepository = getRepository(Company);
 
-    const company: Company | undefined = await companyRepository.findOne({
+    const company = await companyRepository.findOne({
       where: { email },
     });
 
