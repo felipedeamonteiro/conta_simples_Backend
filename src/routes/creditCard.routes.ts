@@ -12,7 +12,8 @@ creditCardRouter.use(ensureAuthenticated);
 
 creditCardRouter.post('/', async (request, response) => {
   try {
-    const { company_id, total_limit } = request.body;
+    const company_id = request.company.id;
+    const { total_limit } = request.body;
 
     const createCard = new CreateCreditCardService();
 
