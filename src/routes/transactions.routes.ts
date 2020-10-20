@@ -14,37 +14,33 @@ const transactionsRouter = Router();
 transactionsRouter.use(ensureAuthenticated);
 
 transactionsRouter.post('/', async (request, response) => {
-  try {
-    const company_id = request.company.id;
-    const {
-      title,
-      description,
-      card_number,
-      currency,
-      transaction_type,
-      date,
-      total_value,
-      instalments,
-    } = request.body;
+  const company_id = request.company.id;
+  const {
+    title,
+    description,
+    card_number,
+    currency,
+    transaction_type,
+    date,
+    total_value,
+    instalments,
+  } = request.body;
 
-    const createTransaction = new CreateTransactionService();
+  const createTransaction = new CreateTransactionService();
 
-    const creditCard = await createTransaction.execute({
-      company_id,
-      title,
-      description,
-      card_number,
-      currency,
-      transaction_type,
-      date,
-      total_value,
-      instalments,
-    });
+  const creditCard = await createTransaction.execute({
+    company_id,
+    title,
+    description,
+    card_number,
+    currency,
+    transaction_type,
+    date,
+    total_value,
+    instalments,
+  });
 
-    return response.json(creditCard);
-  } catch (err) {
-    return response.status(400).json({ error: err.message });
-  }
+  return response.json(creditCard);
 });
 
 transactionsRouter.get('/', async (request, response) => {

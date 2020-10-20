@@ -1,9 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
 import Account from '../models/Account';
-// import Transaction from '../models/Transaction';
-// import CreditCard from '../models/CreditCard';
 
-// import TransactionsRepository from './TransactionsRepository';
+import AppError from '../errors/AppError';
 
 @EntityRepository(Account)
 class AccountRepository extends Repository<Account> {
@@ -16,7 +14,7 @@ class AccountRepository extends Repository<Account> {
     });
 
     if (!account) {
-      throw new Error('There is no account for this company.');
+      throw new AppError('There is no account for this company.');
     }
 
     const { balance } = account;

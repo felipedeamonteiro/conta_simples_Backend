@@ -2,8 +2,9 @@ import 'reflect-metadata';
 import { getCustomRepository } from 'typeorm';
 
 import Account from '../../models/Account';
-
 import AccountRepository from '../../repositories/AccountsRepository';
+
+import AppError from '../../errors/AppError';
 
 interface IRequest {
   company_id: string;
@@ -19,7 +20,7 @@ class CreateCompanyService {
     });
 
     if (checkAccountExists) {
-      throw new Error('Company account already exists.');
+      throw new AppError('Company account already exists.');
     }
 
     const account = accountRepository.create({

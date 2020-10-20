@@ -11,21 +11,17 @@ const creditCardRouter = Router();
 creditCardRouter.use(ensureAuthenticated);
 
 creditCardRouter.post('/', async (request, response) => {
-  try {
-    const company_id = request.company.id;
-    const { total_limit } = request.body;
+  const company_id = request.company.id;
+  const { total_limit } = request.body;
 
-    const createCard = new CreateCreditCardService();
+  const createCard = new CreateCreditCardService();
 
-    const creditCard = await createCard.execute({
-      company_id,
-      total_limit,
-    });
+  const creditCard = await createCard.execute({
+    company_id,
+    total_limit,
+  });
 
-    return response.json(creditCard);
-  } catch (err) {
-    return response.status(400).json({ error: err.message });
-  }
+  return response.json(creditCard);
 });
 
 creditCardRouter.get('/', async (request, response) => {

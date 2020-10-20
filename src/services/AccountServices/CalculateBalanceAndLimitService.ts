@@ -2,6 +2,8 @@
 import 'reflect-metadata';
 import { getCustomRepository, getRepository } from 'typeorm';
 
+import AppError from '../../errors/AppError';
+
 import CreditCard from '../../models/CreditCard';
 
 import AccountRepository from '../../repositories/AccountsRepository';
@@ -30,7 +32,7 @@ class CalculateBalanceAndLimitService {
     });
 
     if (!account) {
-      throw new Error('This account does not exist');
+      throw new AppError('This account does not exist');
     }
 
     const lastTransaction = transactions[transactions.length - 1];
@@ -46,7 +48,7 @@ class CalculateBalanceAndLimitService {
           break;
         case 'Debit':
           if (account.balance < lastTransaction.total_value) {
-            throw new Error(
+            throw new AppError(
               'You do not have enough balance to make this transaction.',
             );
           }
@@ -57,12 +59,12 @@ class CalculateBalanceAndLimitService {
           break;
         case 'Credit':
           if (!creditCard) {
-            throw new Error(
+            throw new AppError(
               'You do not have a credit card to make this transaction.',
             );
           }
           if (creditCard.current_limit < lastTransaction.total_value) {
-            throw new Error(
+            throw new AppError(
               'You do not have enough limit to make this transaction.',
             );
           }

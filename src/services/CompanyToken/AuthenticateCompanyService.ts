@@ -5,6 +5,8 @@ import authConfig from '../../config/auth';
 
 import Company from '../../models/Company';
 
+import AppError from '../../errors/AppError';
+
 interface IRequest {
   email: string;
   password: string;
@@ -24,13 +26,13 @@ class AuthenticateCompanyService {
     });
 
     if (!company) {
-      throw new Error('Incorrect email/password combination');
+      throw new AppError('Incorrect email/password combination', 401);
     }
 
     const passwordMatched = await compare(password, company.password);
 
     if (!passwordMatched) {
-      throw new Error('Incorrect email/password combination');
+      throw new AppError('Incorrect email/password combination', 401);
     }
 
     const { secret, expiresIn } = authConfig.jwt;

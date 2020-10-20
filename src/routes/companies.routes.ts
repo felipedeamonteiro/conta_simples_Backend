@@ -12,24 +12,20 @@ interface ICompanyHere {
 const companiesRoutes = Router();
 
 companiesRoutes.post('/', async (request, response) => {
-  try {
-    const { name, email, password, company_type } = request.body;
+  const { name, email, password, company_type } = request.body;
 
-    const createCompany = new CreateCompanyService();
+  const createCompany = new CreateCompanyService();
 
-    const company: ICompanyHere = await createCompany.execute({
-      name,
-      email,
-      password,
-      company_type,
-    });
+  const company: ICompanyHere = await createCompany.execute({
+    name,
+    email,
+    password,
+    company_type,
+  });
 
-    delete company.password;
+  delete company.password;
 
-    return response.json(company);
-  } catch (err) {
-    return response.status(400).json({ error: err.message });
-  }
+  return response.json(company);
 });
 
 export default companiesRoutes;

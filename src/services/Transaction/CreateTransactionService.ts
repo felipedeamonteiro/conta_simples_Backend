@@ -8,6 +8,8 @@ import AccountRepository from '../../repositories/AccountsRepository';
 import CreditCard from '../../models/CreditCard';
 import CalculateBalanceAndLimitService from '../AccountServices/CalculateBalanceAndLimitService';
 
+import AppError from '../../errors/AppError';
+
 interface IRequest {
   company_id: string;
   title: string;
@@ -58,7 +60,9 @@ class CreateTransactionService {
     });
 
     if (!accountData) {
-      throw new Error('First you need to create an account to have balance.');
+      throw new AppError(
+        'First you need to create an account to have balance.',
+      );
     }
 
     const { balance } = accountData;
@@ -73,7 +77,7 @@ class CreateTransactionService {
       creditCardLimit
     ) {
       if (creditCardLimit < total_value) {
-        throw new Error(
+        throw new AppError(
           'You do not have enough limit to make this transaction.',
         );
       }
@@ -95,7 +99,7 @@ class CreateTransactionService {
     }
 
     if ((!balance || balance < total_value) && transaction_type !== 'Income') {
-      throw new Error(
+      throw new AppError(
         'You do not have enough balance to make this transaction.',
       );
     }

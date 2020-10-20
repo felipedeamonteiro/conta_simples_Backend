@@ -8,7 +8,7 @@ interface IRequest {
   total_limit: number;
 }
 
-class CreateCompanyService {
+class CreateCreditCardService {
   public async execute({
     company_id,
     total_limit,
@@ -32,4 +32,4 @@ class CreateCompanyService {
   }
 }
 
-export default CreateCompanyService;
+export default CreateCreditCardService;
