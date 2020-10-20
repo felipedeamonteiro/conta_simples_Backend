@@ -45,7 +45,7 @@ class CreateTransactionService {
     });
 
     if (!creditCard && transaction_type !== 'Income') {
-      throw new Error(
+      throw new AppError(
         'This card does not exist. Try with another card or create one.',
       );
     }
@@ -70,12 +70,7 @@ class CreateTransactionService {
 
     const parsedDate = parseISO(date);
 
-    if (
-      instalments &&
-      transaction_type === 'Credit' &&
-      instalments > 1 &&
-      creditCardLimit
-    ) {
+    if (transaction_type === 'Credit' && creditCardLimit) {
       if (creditCardLimit < total_value) {
         throw new AppError(
           'You do not have enough limit to make this transaction.',
@@ -95,6 +90,11 @@ class CreateTransactionService {
       });
 
       await transactionRepository.save(transaction);
+      await calculateBalanceAndLimitService.execute(
+        company_id,
+        creditCard?.credit_card_number,
+      );
+
       return transaction;
     }
 
@@ -118,6 +118,11 @@ class CreateTransactionService {
     });
 
     await transactionRepository.save(transaction);
+    await calculateBalanceAndLimitService.execute(
+      company_id,
+      creditCard?.credit_card_number,
+    );
+
     return transaction;
   }
 }

@@ -36,15 +36,18 @@ class CalculateBalanceAndLimitService {
     }
 
     const lastTransaction = transactions[transactions.length - 1];
+    console.log(lastTransaction);
 
     const calculateBalanceBasedOnLastTransaction = async () => {
       switch (lastTransaction.transaction_type) {
         case 'Income':
           const newBalanceIncome =
             account.balance + lastTransaction.total_value;
-          await accountRepository.save({
+          const incomeBalance = accountRepository.create({
+            company_id,
             balance: newBalanceIncome,
           });
+          await accountRepository.save(incomeBalance);
           break;
         case 'Debit':
           if (account.balance < lastTransaction.total_value) {
@@ -53,9 +56,11 @@ class CalculateBalanceAndLimitService {
             );
           }
           const newBalanceDebit = account.balance - lastTransaction.total_value;
-          await accountRepository.save({
+          const debitBalance = accountRepository.create({
+            company_id,
             balance: newBalanceDebit,
           });
+          await accountRepository.save(debitBalance);
           break;
         case 'Credit':
           if (!creditCard) {
@@ -70,15 +75,17 @@ class CalculateBalanceAndLimitService {
           }
           const newBalanceCredit =
             creditCard.current_limit - lastTransaction.total_value;
-          await creditCardRepository.save({
-            current_limit: newBalanceCredit,
+          const creditBalance = accountRepository.create({
+            company_id,
+            balance: newBalanceCredit,
           });
+          await creditCardRepository.save(creditBalance);
           break;
         default:
           break;
       }
     };
-    await calculateBalanceBasedOnLastTransaction();
+    calculateBalanceBasedOnLastTransaction();
   }
 }
 
