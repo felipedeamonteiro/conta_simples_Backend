@@ -11,9 +11,6 @@ import CreditCard from '../models/CreditCard';
 import TransactionsRepository from './TransactionsRepository';
 
 interface IBalance {
-  income: number;
-  debit_outcome: number;
-  credit_outcome: number;
   account_total: number;
   current_limit: number;
 }
@@ -23,15 +20,29 @@ class AccountRepository extends Repository<Account> {
   /**
    * getBalance
    */
-  public async getBalance(
+  public async getBalance(company_id: string): Promise<number> {
+    const account = await this.findOne({
+      where: { company_id },
+    });
+
+    if (!account) {
+      throw new Error('There is no account for this company.');
+    }
+
+    const { balance } = account;
+
+    return balance;
+  }
+
+  public async calculateBalance(
     company_id: string,
-    credit_card_number?: number,
-  ): Promise<IBalance> {
+    creditCardNumber: number,
+  ): Promise<void> {
     const transactionsRepository = getCustomRepository(TransactionsRepository);
     const creditCardRepository = getRepository(CreditCard);
 
     const creditCard = await creditCardRepository.findOne({
-      where: { company_id, credit_card_number },
+      where: { company_id, creditCardNumber },
     });
 
     const transactions = await transactionsRepository.find({
@@ -45,18 +56,11 @@ class AccountRepository extends Repository<Account> {
       throw new Error('This account does not exist');
     }
 
-    const {
-      income,
-      debit_outcome,
-      credit_outcome,
-      account_total,
-      current_limit,
-    } = transactions.reduce(
+    const { account_total, current_limit } = transactions.reduce(
       (accumulator: IBalance, transaction: Transaction) => {
         switch (transaction.transaction_type) {
           case 'Income':
-            accumulator.income += transaction.total_value;
-            accumulator.account_total += accumulator.income;
+            accumulator.account_total += transaction.total_value;
             this.save({
               balance: accumulator.account_total,
             });
@@ -67,8 +71,7 @@ class AccountRepository extends Repository<Account> {
                 'You do not have enough balance to make this transaction.',
               );
             }
-            accumulator.debit_outcome += transaction.total_value;
-            accumulator.account_total -= accumulator.debit_outcome;
+            accumulator.account_total -= transaction.total_value;
             this.save({
               balance: accumulator.account_total,
             });
@@ -79,8 +82,7 @@ class AccountRepository extends Repository<Account> {
                 'You do not have enough limit to make this transaction.',
               );
             }
-            accumulator.credit_outcome += transaction.total_value;
-            accumulator.current_limit -= accumulator.credit_outcome;
+            accumulator.current_limit -= transaction.total_value;
             if (creditCard) {
               creditCardRepository.save({
                 current_limit: accumulator.current_limit,
@@ -93,21 +95,10 @@ class AccountRepository extends Repository<Account> {
         return accumulator;
       },
       {
-        income: 0,
-        debit_outcome: 0,
-        credit_outcome: 0,
         account_total: account.balance,
         current_limit: creditCard ? creditCard.current_limit : 0,
       },
     );
-
-    return {
-      income,
-      debit_outcome,
-      credit_outcome,
-      account_total,
-      current_limit,
-    };
   }
 }
 

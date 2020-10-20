@@ -7,9 +7,9 @@ interface ICompanyHere {
   password?: string;
 }
 
-const sessionsRoutes = Router();
+const sessionsRouter = Router();
 
-sessionsRoutes.post('/', async (request, response) => {
+sessionsRouter.post('/', async (request, response) => {
   try {
     const { email, password } = request.body;
 
@@ -31,4 +31,4 @@ sessionsRoutes.post('/', async (request, response) => {
   }
 });
 
-export default sessionsRoutes;
+export default sessionsRouter;

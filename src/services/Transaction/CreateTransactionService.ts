@@ -45,11 +45,30 @@ class CreateTransactionService {
       );
     }
 
+    await accountRepository.calculateBalance(
+      company_id,
+      creditCard.credit_card_number,
+    );
+
+    const accountData = await accountRepository.findOne({
+      where: { company_id },
+    });
+
+    if (!accountData) {
+      throw new Error('First you need to create an account to have balance.');
+    }
+
+    const { balance } = accountData;
+    const creditCardLimit = creditCard.current_limit;
+
     const parsedDate = parseISO(date);
 
     if (instalments && transaction_type === 'Credit' && instalments > 1) {
-      await accountRepository.getBalance(company_id, card_number);
-
+      if (creditCardLimit < total_value) {
+        throw new Error(
+          'You do not have enough limit to make this transaction.',
+        );
+      }
       const transaction = transactionRepository.create({
         company_id,
         title,
@@ -67,7 +86,11 @@ class CreateTransactionService {
       return transaction;
     }
 
-    await accountRepository.getBalance(company_id, card_number);
+    if (!balance || balance < total_value) {
+      throw new Error(
+        'You do not have enough balance to make this transaction.',
+      );
+    }
 
     const transaction = transactionRepository.create({
       company_id,
