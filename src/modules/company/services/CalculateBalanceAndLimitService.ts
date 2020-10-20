@@ -2,12 +2,12 @@
 import 'reflect-metadata';
 import { getCustomRepository, getRepository } from 'typeorm';
 
-import AppError from '../../errors/AppError';
+import AppError from '@shared/errors/AppError';
 
-import CreditCard from '../../models/CreditCard';
+import CreditCard from '@modules/transaction/infra/typeorm/entities/CreditCard';
 
-import AccountRepository from '../../repositories/AccountsRepository';
-import TransactionsRepository from '../../repositories/TransactionsRepository';
+import TransactionsRepository from '@modules/transaction/repositories/TransactionsRepository';
+import AccountRepository from '../repositories/AccountsRepository';
 
 class CalculateBalanceAndLimitService {
   public async execute(

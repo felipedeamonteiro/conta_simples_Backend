@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import Transaction from '../models/Transaction';
+import Transaction from '../infra/typeorm/entities/Transaction';
 
 @EntityRepository(Transaction)
 class TransactionRepository extends Repository<Transaction> {

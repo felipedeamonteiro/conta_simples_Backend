@@ -2,10 +2,9 @@ import 'reflect-metadata';
 import { getCustomRepository, getRepository } from 'typeorm';
 import { hash } from 'bcryptjs';
 
-import Company from '../../models/Company';
-import AccountsRepository from '../../repositories/AccountsRepository';
-
-import AppError from '../../errors/AppError';
+import Company from '@modules/company/infra/typeorm/entities/Company';
+import AppError from '@shared/errors/AppError';
+import AccountsRepository from '../repositories/AccountsRepository';
 
 interface IRequest {
   name: string;

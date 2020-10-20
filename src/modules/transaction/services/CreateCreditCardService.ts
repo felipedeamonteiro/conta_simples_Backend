@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { getRepository } from 'typeorm';
 
-import CreditCard from '../../models/CreditCard';
+import CreditCard from '../infra/typeorm/entities/CreditCard';
 
 interface IRequest {
   company_id: string;

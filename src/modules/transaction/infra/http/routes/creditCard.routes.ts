@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { getRepository } from 'typeorm';
 
-import CreateCreditCardService from '../services/CreditCard/CreateCreditCardService';
+import ensureAuthenticated from '@modules/company/infra/http/middleware/ensureAuthenticated';
+import CreateCreditCardService from '../../../services/CreateCreditCardService';
 
-import ensureAuthenticated from '../middleware/ensureAuthenticated';
-import CreditCard from '../models/CreditCard';
+import CreditCard from '../../typeorm/entities/CreditCard';
 
 const creditCardRouter = Router();
 

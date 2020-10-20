@@ -1,7 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
-import Account from '../models/Account';
-
-import AppError from '../errors/AppError';
+import AppError from '@shared/errors/AppError';
+import Account from '../infra/typeorm/entities/Account';
 
 @EntityRepository(Account)
 class AccountRepository extends Repository<Account> {

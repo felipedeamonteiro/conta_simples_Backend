@@ -1,9 +1,8 @@
 import 'reflect-metadata';
 import { getCustomRepository } from 'typeorm';
 
-import AccountRepository from '../../repositories/AccountsRepository';
-
-import AppError from '../../errors/AppError';
+import AppError from '@shared/errors/AppError';
+import AccountRepository from '../repositories/AccountsRepository';
 
 class GetBalanceService {
   public async execute(company_id: string): Promise<number> {

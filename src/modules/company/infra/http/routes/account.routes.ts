@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
-import GetBalanceService from '../services/AccountServices/GetBalanceService';
 import ensureAuthenticated from '../middleware/ensureAuthenticated';
+import GetBalanceService from '../../../services/GetBalanceService';
 
 const accountRouter = Router();
 

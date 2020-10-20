@@ -2,12 +2,12 @@
 import { Router } from 'express';
 import { getCustomRepository } from 'typeorm';
 
-import CreateTransactionService from '../services/Transaction/CreateTransactionService';
+import ensureAuthenticated from '@modules/company/infra/http/middleware/ensureAuthenticated';
+import CreateTransactionService from '../../../services/CreateTransactionService';
 
-import ensureAuthenticated from '../middleware/ensureAuthenticated';
-import TransactionsRepository from '../repositories/TransactionsRepository';
+import TransactionsRepository from '../../../repositories/TransactionsRepository';
 
-import Transaction from '../models/Transaction';
+import Transaction from '../../typeorm/entities/Transaction';
 
 const transactionsRouter = Router();
 

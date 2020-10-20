@@ -1,14 +1,13 @@
 import { getCustomRepository, getRepository } from 'typeorm';
 import { parseISO } from 'date-fns';
 
-import Transaction from '../../models/Transaction';
+import CalculateBalanceAndLimitService from '@modules/company/services/CalculateBalanceAndLimitService';
+import AppError from '@shared/errors/AppError';
+import AccountRepository from '@modules/company/repositories/AccountsRepository';
+import Transaction from '../infra/typeorm/entities/Transaction';
 
-import TransactionRepository from '../../repositories/TransactionsRepository';
-import AccountRepository from '../../repositories/AccountsRepository';
-import CreditCard from '../../models/CreditCard';
-import CalculateBalanceAndLimitService from '../AccountServices/CalculateBalanceAndLimitService';
-
-import AppError from '../../errors/AppError';
+import TransactionRepository from '../repositories/TransactionsRepository';
+import CreditCard from '../infra/typeorm/entities/CreditCard';
 
 interface IRequest {
   company_id: string;

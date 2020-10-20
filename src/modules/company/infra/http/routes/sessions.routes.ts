@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import AuthenticateUserService from '../services/CompanyToken/AuthenticateCompanyService';
+import AuthenticateUserService from '../../../services/AuthenticateCompanyService';
 
 interface ICompanyHere {
   email: string;

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import CreateCompanyService from '../services/CompanyServices/CreateCompanyService';
+import CreateCompanyService from '../../../services/CreateCompanyService';
 
 interface ICompanyHere {
   name: string;
