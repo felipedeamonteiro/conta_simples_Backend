@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import ensureAuthenticated from '../middleware/ensureAuthenticated';
+import ensureAuthenticated from '@modules/companies/infra/http/middleware/ensureAuthenticated';
 import GetBalanceService from '../../../services/GetBalanceService';
 
 const accountRouter = Router();

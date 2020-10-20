@@ -1,4 +1,3 @@
-import { getCustomRepository, getRepository } from 'typeorm';
 import { parseISO } from 'date-fns';
 
 import CalculateBalanceAndLimitService from '@modules/company/services/CalculateBalanceAndLimitService';
@@ -8,6 +7,8 @@ import Transaction from '../infra/typeorm/entities/Transaction';
 
 import TransactionRepository from '../repositories/TransactionsRepository';
 import CreditCard from '../infra/typeorm/entities/CreditCard';
+import ITransactionRepository from '../repositories/ITransactionsRepository';
+import ICreditCardsRepository from '../repositories/ICreditCardsRepository';
 
 interface IRequest {
   company_id: string;
@@ -22,6 +23,12 @@ interface IRequest {
 }
 
 class CreateTransactionService {
+  constructor(
+    private transactionRepository: ITransactionRepository,
+    private creditCardRepository: ICreditCardsRepository,
+    private accountRepository: IAccountRepository,
+  ) {}
+
   public async execute({
     company_id,
     title,
@@ -33,7 +40,6 @@ class CreateTransactionService {
     total_value,
     instalments = 1,
   }: IRequest): Promise<Transaction> {
-    const transactionRepository = getCustomRepository(TransactionRepository);
     const accountRepository = getCustomRepository(AccountRepository);
     const creditCardRepository = getRepository(CreditCard);
 
@@ -75,7 +81,7 @@ class CreateTransactionService {
           'You do not have enough limit to make this transaction.',
         );
       }
-      const transaction = transactionRepository.create({
+      const transaction = await this.transactionRepository.create({
         company_id,
         title,
         description,
@@ -88,7 +94,6 @@ class CreateTransactionService {
         instalment_value: total_value / instalments,
       });
 
-      await transactionRepository.save(transaction);
       await calculateBalanceAndLimitService.execute(
         company_id,
         creditCard?.credit_card_number,
@@ -103,7 +108,7 @@ class CreateTransactionService {
       );
     }
 
-    const transaction = transactionRepository.create({
+    const transaction = await this.transactionRepository.create({
       company_id,
       title,
       description,
@@ -116,7 +121,6 @@ class CreateTransactionService {
       instalment_value: 0,
     });
 
-    await transactionRepository.save(transaction);
     await calculateBalanceAndLimitService.execute(
       company_id,
       creditCard?.credit_card_number,

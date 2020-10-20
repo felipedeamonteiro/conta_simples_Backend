@@ -5,7 +5,7 @@ export default interface ICreateTransactionDTO {
   card_number?: number;
   currency: string;
   transaction_type: 'Credit' | 'Debit' | 'Income';
-  date: string;
+  date: Date;
   total_value: number;
   instalments?: number;
   instalment_value?: number;
