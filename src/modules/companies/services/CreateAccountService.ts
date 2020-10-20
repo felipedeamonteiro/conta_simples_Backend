@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { getCustomRepository } from 'typeorm';
 
-import Account from '@modules/company/infra/typeorm/entities/Account';
+import Account from '@modules/companies/infra/typeorm/entities/Account';
 import AppError from '@shared/errors/AppError';
 import AccountRepository from '../repositories/AccountsRepository';
 

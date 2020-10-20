@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { getRepository } from 'typeorm';
 
-import ensureAuthenticated from '@modules/company/infra/http/middleware/ensureAuthenticated';
+import ensureAuthenticated from '@modules/companies/infra/http/middleware/ensureAuthenticated';
 import CreateCreditCardService from '../../../services/CreateCreditCardService';
 
 import CreditCard from '../../typeorm/entities/CreditCard';

@@ -4,9 +4,9 @@ import { getCustomRepository, getRepository } from 'typeorm';
 
 import AppError from '@shared/errors/AppError';
 
-import CreditCard from '@modules/transaction/infra/typeorm/entities/CreditCard';
+import CreditCard from '@modules/transactions/infra/typeorm/entities/CreditCard';
 
-import TransactionsRepository from '@modules/transaction/repositories/TransactionsRepository';
+import TransactionsRepository from '@modules/transactions/repositories/TransactionsRepository';
 import AccountRepository from '../repositories/AccountsRepository';
 
 class CalculateBalanceAndLimitService {

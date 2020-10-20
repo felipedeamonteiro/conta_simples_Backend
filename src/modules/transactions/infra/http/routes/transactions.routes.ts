@@ -2,7 +2,7 @@
 import { Router } from 'express';
 import { getCustomRepository } from 'typeorm';
 
-import ensureAuthenticated from '@modules/company/infra/http/middleware/ensureAuthenticated';
+import ensureAuthenticated from '@modules/companies/infra/http/middleware/ensureAuthenticated';
 import CreateTransactionService from '../../../services/CreateTransactionService';
 
 import TransactionsRepository from '../../../repositories/TransactionsRepository';

@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { getCustomRepository, getRepository } from 'typeorm';
 import { hash } from 'bcryptjs';
 
-import Company from '@modules/company/infra/typeorm/entities/Company';
+import Company from '@modules/companies/infra/typeorm/entities/Company';
 import AppError from '@shared/errors/AppError';
 import AccountsRepository from '../repositories/AccountsRepository';
 
