@@ -6,6 +6,7 @@ import Transaction from '../../models/Transaction';
 import TransactionRepository from '../../repositories/TransactionsRepository';
 import AccountRepository from '../../repositories/AccountsRepository';
 import CreditCard from '../../models/CreditCard';
+import CalculateBalanceAndLimitService from '../AccountServices/CalculateBalanceAndLimitService';
 
 interface IRequest {
   company_id: string;
@@ -24,7 +25,7 @@ class CreateTransactionService {
     company_id,
     title,
     description,
-    card_number,
+    card_number = 0,
     currency,
     transaction_type,
     date,
@@ -35,19 +36,21 @@ class CreateTransactionService {
     const accountRepository = getCustomRepository(AccountRepository);
     const creditCardRepository = getRepository(CreditCard);
 
+    const calculateBalanceAndLimitService = new CalculateBalanceAndLimitService();
+
     const creditCard = await creditCardRepository.findOne({
       where: { company_id, credit_card_number: card_number },
     });
 
-    if (!creditCard) {
+    if (!creditCard && transaction_type !== 'Income') {
       throw new Error(
         'This card does not exist. Try with another card or create one.',
       );
     }
 
-    await accountRepository.calculateBalance(
+    await calculateBalanceAndLimitService.execute(
       company_id,
-      creditCard.credit_card_number,
+      creditCard?.credit_card_number,
     );
 
     const accountData = await accountRepository.findOne({
@@ -59,11 +62,16 @@ class CreateTransactionService {
     }
 
     const { balance } = accountData;
-    const creditCardLimit = creditCard.current_limit;
+    const creditCardLimit = creditCard?.current_limit;
 
     const parsedDate = parseISO(date);
 
-    if (instalments && transaction_type === 'Credit' && instalments > 1) {
+    if (
+      instalments &&
+      transaction_type === 'Credit' &&
+      instalments > 1 &&
+      creditCardLimit
+    ) {
       if (creditCardLimit < total_value) {
         throw new Error(
           'You do not have enough limit to make this transaction.',
@@ -86,7 +94,7 @@ class CreateTransactionService {
       return transaction;
     }
 
-    if (!balance || balance < total_value) {
+    if ((!balance || balance < total_value) && transaction_type !== 'Income') {
       throw new Error(
         'You do not have enough balance to make this transaction.',
       );

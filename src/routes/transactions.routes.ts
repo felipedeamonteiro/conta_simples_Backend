@@ -52,7 +52,9 @@ transactionsRouter.get('/', async (request, response) => {
   const company_id = request.company.id;
   const { transactionType } = request.body;
 
-  const transactionFunc = async (): Promise<Transaction[] | undefined> => {
+  const findTransactionsByType = async (): Promise<
+    Transaction[] | undefined
+  > => {
     switch (transactionType) {
       case 'Debit':
         const debitTransactions = await transactionRepository.find({
@@ -90,8 +92,7 @@ transactionsRouter.get('/', async (request, response) => {
         return undefined;
     }
   };
-  const transaction = await transactionFunc();
-  console.log(transaction);
+  const transaction = await findTransactionsByType();
 
   return response.json(transaction);
 });
