@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import AppError from '@shared/errors/AppError';
-import Account from '../infra/typeorm/entities/Account';
+import Account from '../entities/Account';
 
 @EntityRepository(Account)
 class AccountRepository extends Repository<Account> {
@@ -20,6 +20,8 @@ class AccountRepository extends Repository<Account> {
 
     return balance;
   }
+
+  public async createAccount({}): Promise<> {}
 }
 
 export default AccountRepository;

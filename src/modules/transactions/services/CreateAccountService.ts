@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import { getCustomRepository } from 'typeorm';
 
-import Account from '@modules/companies/infra/typeorm/entities/Account';
+import Account from '@modules/transactions/infra/typeorm/entities/Account';
 import AppError from '@shared/errors/AppError';
-import AccountRepository from '../repositories/AccountsRepository';
+import AccountRepository from '../infra/typeorm/repositories/AccountsRepository';
 
 interface IRequest {
   company_id: string;

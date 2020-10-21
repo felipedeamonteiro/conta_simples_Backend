@@ -29,6 +29,8 @@ class CreditCardRepository implements ICreditCardsRepository {
 
     return creditCard;
   }
+
+  public async getCurrentLimitAndTotalLimit({}): Promise<> {}
 }
 
 export default CreditCardRepository;

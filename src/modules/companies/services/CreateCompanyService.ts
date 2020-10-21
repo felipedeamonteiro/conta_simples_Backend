@@ -4,7 +4,7 @@ import { hash } from 'bcryptjs';
 
 import Company from '@modules/companies/infra/typeorm/entities/Company';
 import AppError from '@shared/errors/AppError';
-import AccountsRepository from '../repositories/AccountsRepository';
+import IAccountsRepository from '@modules/transactions/repositories/IAccountsRepository';
 
 interface IRequest {
   name: string;
@@ -21,7 +21,7 @@ class CreateCompanyService {
     company_type,
   }: IRequest): Promise<Company> {
     const companyRepository = getRepository(Company);
-    const accountRepository = getCustomRepository(AccountsRepository);
+    const accountRepository = getCustomRepository(IAccountsRepository);
 
     const checkCompanyExists = await companyRepository.findOne({
       where: { email },
