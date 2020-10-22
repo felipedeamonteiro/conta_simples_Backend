@@ -1,31 +1,20 @@
 import { Router } from 'express';
-import { container } from 'tsyringe';
+import { celebrate, Segments, Joi } from 'celebrate';
 
-import AuthenticateUserService from '../../../services/AuthenticateCompanyService';
-
-interface ICompanyHere {
-  email: string;
-  password?: string;
-}
+import SessionsController from '../controllers/SessionsController';
 
 const sessionsRouter = Router();
+const sessionsController = new SessionsController();
 
-sessionsRouter.post('/', async (request, response) => {
-  const { email, password } = request.body;
-
-  const authenticateCompany = container.resolve(AuthenticateUserService);
-
-  const { company, token } = await authenticateCompany.execute({
-    email,
-    password,
-  });
-
-  // This was done because an error in the delete method when not passing "?" in type of the deleted data
-  const companyData: ICompanyHere = company;
-
-  delete companyData.password;
-
-  return response.json({ companyData, token });
-});
+sessionsRouter.post(
+  '/',
+  celebrate({
+    [Segments.BODY]: {
+      email: Joi.string().email().required(),
+      password: Joi.string().required(),
+    },
+  }),
+  sessionsController.create,
+);
 
 export default sessionsRouter;
