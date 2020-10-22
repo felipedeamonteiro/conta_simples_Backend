@@ -25,10 +25,10 @@ class TransactionRepository implements ITransactionsRepository {
 
   public async findTransactionBySameCard(
     company_id: string,
-    card_number: string,
+    credit_card_number: number,
   ): Promise<Transaction[] | undefined> {
     const findTransaction = await this.ormRepository.find({
-      where: { card_number, company_id },
+      where: { credit_card_number, company_id },
     });
 
     if (!findTransaction) {
@@ -77,7 +77,7 @@ class TransactionRepository implements ITransactionsRepository {
     company_id,
     title,
     description,
-    card_number,
+    credit_card_number,
     currency,
     transaction_type,
     date,
@@ -89,7 +89,7 @@ class TransactionRepository implements ITransactionsRepository {
       company_id,
       title,
       description,
-      card_number,
+      credit_card_number,
       currency,
       transaction_type,
       date,

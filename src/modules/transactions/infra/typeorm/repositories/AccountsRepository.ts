@@ -12,9 +12,6 @@ class AccountRepository implements IAccountsRepository {
     this.ormRepository = getRepository(Account);
   }
 
-  /**
-   * getBalance
-   */
   public async getBalance(company_id: string): Promise<number> {
     const account = await this.ormRepository.findOne({
       where: { company_id },

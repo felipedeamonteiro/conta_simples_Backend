@@ -1,7 +1,7 @@
 import { parseISO } from 'date-fns';
 import { injectable, inject, container } from 'tsyringe';
 
-import CalculateBalanceAndLimitService from '@modules/company/services/CalculateBalanceAndLimitService';
+import CalculateBalanceAOrLimitService from '@modules/transactions/services/CalculateBalanceOrLimitService';
 import AppError from '@shared/errors/AppError';
 import Transaction from '../infra/typeorm/entities/Transaction';
 
@@ -13,7 +13,7 @@ interface IRequest {
   company_id: string;
   title: string;
   description?: string;
-  card_number?: number;
+  credit_card_number?: number;
   currency: string;
   transaction_type: 'Credit' | 'Debit' | 'Income';
   date: string;
@@ -38,20 +38,21 @@ class CreateTransactionService {
     company_id,
     title,
     description,
-    card_number = 0,
+    credit_card_number = 0,
     currency,
     transaction_type,
     date,
     total_value,
     instalments = 1,
   }: IRequest): Promise<Transaction> {
-    const calculateBalanceAndLimitService = container.resolve(
-      CalculateBalanceAndLimitService,
+    const calculateBalanceOrLimitService = container.resolve(
+      CalculateBalanceAOrLimitService,
     );
 
-    const creditCard = await this.creditCardRepository.findOne({
-      where: { company_id, credit_card_number: card_number },
-    });
+    const creditCard = await this.creditCardRepository.findCardByCompanyIdAndByCardNumber(
+      company_id,
+      credit_card_number,
+    );
 
     if (!creditCard && transaction_type !== 'Income') {
       throw new AppError(
@@ -59,22 +60,19 @@ class CreateTransactionService {
       );
     }
 
-    await calculateBalanceAndLimitService.execute(
+    await calculateBalanceOrLimitService.execute(
       company_id,
       creditCard?.credit_card_number,
     );
 
-    const accountData = await this.accountRepository.findOne({
-      where: { company_id },
-    });
+    const accountBalance = await this.accountRepository.getBalance(company_id);
 
-    if (!accountData) {
+    if (!accountBalance) {
       throw new AppError(
         'First you need to create an account to have balance.',
       );
     }
 
-    const { balance } = accountData;
     const creditCardLimit = creditCard?.current_limit;
 
     const parsedDate = parseISO(date);
@@ -85,11 +83,11 @@ class CreateTransactionService {
           'You do not have enough limit to make this transaction.',
         );
       }
-      const transaction = await this.transactionRepository.create({
+      const transaction = await this.transactionRepository.createTransaction({
         company_id,
         title,
         description,
-        card_number,
+        credit_card_number,
         currency,
         transaction_type,
         date: parsedDate,
@@ -98,7 +96,7 @@ class CreateTransactionService {
         instalment_value: total_value / instalments,
       });
 
-      await calculateBalanceAndLimitService.execute(
+      await calculateBalanceOrLimitService.execute(
         company_id,
         creditCard?.credit_card_number,
       );
@@ -106,17 +104,20 @@ class CreateTransactionService {
       return transaction;
     }
 
-    if ((!balance || balance < total_value) && transaction_type !== 'Income') {
+    if (
+      (!accountBalance || accountBalance < total_value) &&
+      transaction_type !== 'Income'
+    ) {
       throw new AppError(
         'You do not have enough balance to make this transaction.',
       );
     }
 
-    const transaction = await this.transactionRepository.create({
+    const transaction = await this.transactionRepository.createTransaction({
       company_id,
       title,
       description,
-      card_number,
+      credit_card_number,
       currency,
       transaction_type,
       date: parsedDate,
@@ -125,7 +126,7 @@ class CreateTransactionService {
       instalment_value: 0,
     });
 
-    await calculateBalanceAndLimitService.execute(
+    await calculateBalanceOrLimitService.execute(
       company_id,
       creditCard?.credit_card_number,
     );
