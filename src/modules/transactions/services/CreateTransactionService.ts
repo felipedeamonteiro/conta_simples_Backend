@@ -1,14 +1,13 @@
 import { parseISO } from 'date-fns';
+import { injectable, inject, container } from 'tsyringe';
 
 import CalculateBalanceAndLimitService from '@modules/company/services/CalculateBalanceAndLimitService';
 import AppError from '@shared/errors/AppError';
-import AccountRepository from '@modules/company/repositories/AccountsRepository';
 import Transaction from '../infra/typeorm/entities/Transaction';
 
-import TransactionRepository from '../repositories/TransactionsRepository';
-import CreditCard from '../infra/typeorm/entities/CreditCard';
 import ITransactionRepository from '../repositories/ITransactionsRepository';
 import ICreditCardsRepository from '../repositories/ICreditCardsRepository';
+import IAccountsRepository from '../repositories/IAccountsRepository';
 
 interface IRequest {
   company_id: string;
@@ -22,11 +21,17 @@ interface IRequest {
   instalments?: number;
 }
 
+@injectable()
 class CreateTransactionService {
   constructor(
+    @inject('TransactionsRepository')
     private transactionRepository: ITransactionRepository,
+
+    @inject('CreditCardsRepository')
     private creditCardRepository: ICreditCardsRepository,
-    private accountRepository: IAccountRepository,
+
+    @inject('AccountsRepository')
+    private accountRepository: IAccountsRepository,
   ) {}
 
   public async execute({
@@ -40,12 +45,11 @@ class CreateTransactionService {
     total_value,
     instalments = 1,
   }: IRequest): Promise<Transaction> {
-    const accountRepository = getCustomRepository(AccountRepository);
-    const creditCardRepository = getRepository(CreditCard);
+    const calculateBalanceAndLimitService = container.resolve(
+      CalculateBalanceAndLimitService,
+    );
 
-    const calculateBalanceAndLimitService = new CalculateBalanceAndLimitService();
-
-    const creditCard = await creditCardRepository.findOne({
+    const creditCard = await this.creditCardRepository.findOne({
       where: { company_id, credit_card_number: card_number },
     });
 
@@ -60,7 +64,7 @@ class CreateTransactionService {
       creditCard?.credit_card_number,
     );
 
-    const accountData = await accountRepository.findOne({
+    const accountData = await this.accountRepository.findOne({
       where: { company_id },
     });
 

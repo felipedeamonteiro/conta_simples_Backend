@@ -1,10 +1,10 @@
 import { Router } from 'express';
 
-import companiesRouter from '@modules/company/infra/http/routes/companies.routes';
-import sessionsRouter from '@modules/company/infra/http/routes/sessions.routes';
-import creditCardRouter from '@modules/transaction/infra/http/routes/creditCard.routes';
-import transactionsRouter from '@modules/transaction/infra/http/routes/transactions.routes';
-import accountRouter from '@modules/company/infra/http/routes/account.routes';
+import companiesRouter from '@modules/companies/infra/http/routes/companies.routes';
+import sessionsRouter from '@modules/companies/infra/http/routes/sessions.routes';
+import creditCardRouter from '@modules/transactions/infra/http/routes/creditCard.routes';
+import transactionsRouter from '@modules/transactions/infra/http/routes/transactions.routes';
+import accountRouter from '@modules/transactions/infra/http/routes/account.routes';
 
 const routes = Router();
 
