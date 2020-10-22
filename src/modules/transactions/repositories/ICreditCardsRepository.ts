@@ -12,4 +12,5 @@ export default interface ICreditCardsRepository {
     company_id: string,
     credit_card_number: number,
   ): Promise<CreditCard | undefined>;
+  findCardsAndCount(company_id: string): Promise<number>;
 }

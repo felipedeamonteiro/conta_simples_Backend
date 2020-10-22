@@ -1,20 +1,18 @@
-import 'reflect-metadata';
-import { getCustomRepository } from 'typeorm';
+import { inject, injectable } from 'tsyringe';
 
-import AppError from '@shared/errors/AppError';
-import AccountRepository from '../repositories/AccountsRepository';
+import IAccountsRepository from '../repositories/IAccountsRepository';
 
+@injectable()
 class GetBalanceService {
+  constructor(
+    @inject('AccountsRepository')
+    private accountsRepository: IAccountsRepository,
+  ) {}
+
   public async execute(company_id: string): Promise<number> {
-    const accountRepository = getCustomRepository(AccountRepository);
+    const balance = await this.accountsRepository.getBalance(company_id);
 
-    const accountBalance = await accountRepository.getBalance(company_id);
-
-    if (!accountBalance) {
-      throw new AppError('Company balance does not exist.');
-    }
-
-    return accountBalance;
+    return balance;
   }
 }
 

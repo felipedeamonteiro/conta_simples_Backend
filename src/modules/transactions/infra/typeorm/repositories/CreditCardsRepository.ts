@@ -67,6 +67,14 @@ class CreditCardsRepository implements ICreditCardsRepository {
 
     return creditCards;
   }
+
+  public async findCardsAndCount(company_id: string): Promise<number> {
+    const [, cardsQuantity] = await this.ormRepository.findAndCount({
+      where: { company_id },
+    });
+
+    return cardsQuantity;
+  }
 }
 
 export default CreditCardsRepository;

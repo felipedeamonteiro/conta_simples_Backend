@@ -51,7 +51,6 @@ class CreateCompanyService {
 
     await this.accountsRepository.createAccount({
       company_id: company.id,
-      balance: 0,
     });
 
     return company;

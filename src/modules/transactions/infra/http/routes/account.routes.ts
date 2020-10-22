@@ -1,20 +1,13 @@
 import { Router } from 'express';
 
 import ensureAuthenticated from '@modules/companies/infra/http/middleware/ensureAuthenticated';
-import GetBalanceService from '../../../services/GetBalanceService';
+import BalanceController from '../controllers/BalanceController';
 
 const accountRouter = Router();
+const balanceController = new BalanceController();
 
 accountRouter.use(ensureAuthenticated);
 
-accountRouter.get('/', async (request, response) => {
-  const company_id = request.company.id;
-
-  const getBalance = new GetBalanceService();
-
-  const balance = await getBalance.execute(company_id);
-
-  return response.json(balance);
-});
+accountRouter.get('/', balanceController.index);
 
 export default accountRouter;
