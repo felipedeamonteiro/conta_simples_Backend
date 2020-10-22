@@ -1,10 +1,12 @@
-import { getRepository } from 'typeorm';
-import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import authConfig from '@config/auth';
+import { injectable, inject } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
+
 import Company from '../infra/typeorm/entities/Company';
+import ICompaniesRepository from '../repositories/ICompaniesRepository';
+import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 
 interface IRequest {
   email: string;
@@ -16,19 +18,30 @@ interface IResponse {
   token: string;
 }
 
+@injectable()
 class AuthenticateCompanyService {
-  public async execute({ email, password }: IRequest): Promise<IResponse> {
-    const companyRepository = getRepository(Company);
+  constructor(
+    @inject('CompaniesRepository')
+    private companiesRepository: ICompaniesRepository,
 
-    const company: Company | undefined = await companyRepository.findOne({
-      where: { email },
-    });
+    @inject('HashProvider')
+    private hashProvider: IHashProvider,
+  ) {}
+
+  public async execute({ email, password }: IRequest): Promise<IResponse> {
+    const company = await this.companiesRepository.findByEmail(email);
 
     if (!company) {
       throw new AppError('Incorrect email/password combination', 401);
     }
 
-    const passwordMatched = await compare(password, company.password);
+    // company.password - Senha criptografada
+    // password - Senha não criptografada
+
+    const passwordMatched = await this.hashProvider.compareHash(
+      password,
+      company.password,
+    );
 
     if (!passwordMatched) {
       throw new AppError('Incorrect email/password combination', 401);

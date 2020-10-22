@@ -4,7 +4,7 @@ import ICreateTransactionDTO from '../dtos/ICreateTransactionDTO';
 export default interface ITransactionsRepository {
   findTransactionBySameCard(
     company_id: string,
-    card_number: string,
+    credit_card_number: string,
   ): Promise<Transaction[] | undefined>;
   // Filtrar por data e por flags de crédito e débito
   getAllAccountTransactions(
@@ -15,4 +15,9 @@ export default interface ITransactionsRepository {
     date: Date,
   ): Promise<Transaction | undefined>;
   createTransaction(data: ICreateTransactionDTO): Promise<Transaction>;
+  calculateBalanceOrLimitBasedOnLastTransaction(
+    lastTransaction: Transaction,
+    company_id: string,
+    credit_card_number: number,
+  ): Promise<void>;
 }

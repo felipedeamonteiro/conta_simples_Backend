@@ -1,10 +1,10 @@
-import 'reflect-metadata';
-import { getCustomRepository, getRepository } from 'typeorm';
-import { hash } from 'bcryptjs';
+import { injectable, inject } from 'tsyringe';
 
 import Company from '@modules/companies/infra/typeorm/entities/Company';
 import AppError from '@shared/errors/AppError';
 import IAccountsRepository from '@modules/transactions/repositories/IAccountsRepository';
+import ICompaniesRepository from '../repositories/ICompaniesRepository';
+import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 
 interface IRequest {
   name: string;
@@ -13,43 +13,46 @@ interface IRequest {
   company_type: 'MEI' | 'ME' | 'Startup';
 }
 
+@injectable()
 class CreateCompanyService {
+  constructor(
+    @inject('CompaniesRepository')
+    private companiesRepository: ICompaniesRepository,
+
+    @inject('HashProvider')
+    private hashProvider: IHashProvider,
+
+    @inject('AccountsRepository')
+    private accountsRepository: IAccountsRepository,
+  ) {}
+
   public async execute({
     name,
     email,
     password,
     company_type,
   }: IRequest): Promise<Company> {
-    const companyRepository = getRepository(Company);
-    const accountRepository = getCustomRepository(IAccountsRepository);
-
-    const checkCompanyExists = await companyRepository.findOne({
-      where: { email },
-    });
+    const checkCompanyExists = await this.companiesRepository.findByEmail(
+      email,
+    );
 
     if (checkCompanyExists) {
       throw new AppError('Email address already used.');
     }
 
-    const hashedPassword = await hash(password, 8);
+    const hashedPassword = await this.hashProvider.generateHash(password);
 
-    const company = companyRepository.create({
+    const company = await this.companiesRepository.createCompany({
       name,
       email,
       password: hashedPassword,
       company_type,
     });
 
-    await companyRepository.save(company);
-
-    const { id } = company;
-
-    const account = accountRepository.create({
-      company_id: id,
+    await this.accountsRepository.createAccount({
+      company_id: company.id,
       balance: 0,
     });
-
-    await accountRepository.save(account);
 
     return company;
   }

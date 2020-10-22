@@ -2,7 +2,7 @@ export default interface ICreateTransactionDTO {
   company_id: string;
   title: string;
   description?: string;
-  card_number?: number;
+  credit_card_number?: number;
   currency: string;
   transaction_type: 'Credit' | 'Debit' | 'Income';
   date: Date;

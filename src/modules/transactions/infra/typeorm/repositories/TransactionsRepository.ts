@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import { getRepository, Repository } from 'typeorm';
 
 import ITransactionsRepository from '@modules/transactions/repositories/ITransactionsRepository';
@@ -6,12 +7,20 @@ import ICreateTransactionDTO from '@modules/transactions/dtos/ICreateTransaction
 import AppError from '@shared/errors/AppError';
 
 import Transaction from '../entities/Transaction';
+import CreditCard from '../entities/CreditCard';
+import Account from '../entities/Account';
 
 class TransactionRepository implements ITransactionsRepository {
   private ormRepository: Repository<Transaction>;
 
+  private accountRepository: Repository<Account>;
+
+  private creditCardRepository: Repository<CreditCard>;
+
   constructor() {
     this.ormRepository = getRepository(Transaction);
+    this.accountRepository = getRepository(Account);
+    this.creditCardRepository = getRepository(CreditCard);
   }
 
   public async findTransactionBySameCard(
@@ -92,6 +101,69 @@ class TransactionRepository implements ITransactionsRepository {
     await this.ormRepository.save(transaction);
 
     return transaction;
+  }
+
+  public async calculateBalanceOrLimitBasedOnLastTransaction(
+    lastTransaction: Transaction,
+    company_id: string,
+    credit_card_number: number,
+  ): Promise<void> {
+    const account = await this.accountRepository.findOne({
+      where: { company_id },
+    });
+
+    if (!account) {
+      throw new AppError('There is no account for this company_id');
+    }
+
+    const creditCard = await this.creditCardRepository.findOne({
+      where: { company_id, credit_card_number },
+    });
+
+    switch (lastTransaction.transaction_type) {
+      case 'Income':
+        const newBalanceIncome = account.balance + lastTransaction.total_value;
+        const incomeBalance = this.accountRepository.create({
+          company_id,
+          balance: newBalanceIncome,
+        });
+        await this.accountRepository.save(incomeBalance);
+        break;
+      case 'Debit':
+        if (account.balance < lastTransaction.total_value) {
+          throw new AppError(
+            'You do not have enough balance to make this transaction.',
+          );
+        }
+        const newBalanceDebit = account.balance - lastTransaction.total_value;
+        const debitBalance = this.accountRepository.create({
+          company_id,
+          balance: newBalanceDebit,
+        });
+        await this.accountRepository.save(debitBalance);
+        break;
+      case 'Credit':
+        if (!creditCard) {
+          throw new AppError(
+            'You do not have a credit card to make this transaction.',
+          );
+        }
+        if (creditCard.current_limit < lastTransaction.total_value) {
+          throw new AppError(
+            'You do not have enough limit to make this transaction.',
+          );
+        }
+        const newBalanceCredit =
+          creditCard.current_limit - lastTransaction.total_value;
+        const creditBalance = this.accountRepository.create({
+          company_id,
+          balance: newBalanceCredit,
+        });
+        await this.creditCardRepository.save(creditBalance);
+        break;
+      default:
+        break;
+    }
   }
 }
 

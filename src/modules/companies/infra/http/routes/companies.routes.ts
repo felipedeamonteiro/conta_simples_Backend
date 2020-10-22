@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { container } from 'tsyringe';
 
 import CreateCompanyService from '../../../services/CreateCompanyService';
 
@@ -14,7 +15,7 @@ const companiesRoutes = Router();
 companiesRoutes.post('/', async (request, response) => {
   const { name, email, password, company_type } = request.body;
 
-  const createCompany = new CreateCompanyService();
+  const createCompany = container.resolve(CreateCompanyService);
 
   const company: ICompanyHere = await createCompany.execute({
     name,

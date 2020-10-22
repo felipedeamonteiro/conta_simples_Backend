@@ -46,6 +46,27 @@ class CreditCardsRepository implements ICreditCardsRepository {
 
     return creditCard;
   }
+
+  public async findCardsByCompanyId(
+    company_id: string,
+  ): Promise<CreditCard[] | undefined> {
+    const creditCards = await this.ormRepository.find({
+      where: { company_id },
+    });
+
+    return creditCards;
+  }
+
+  public async findCardByCompanyIdAndByCardNumber(
+    company_id: string,
+    card_number: number,
+  ): Promise<CreditCard | undefined> {
+    const creditCards = await this.ormRepository.findOne({
+      where: { company_id, card_number },
+    });
+
+    return creditCards;
+  }
 }
 
 export default CreditCardsRepository;
