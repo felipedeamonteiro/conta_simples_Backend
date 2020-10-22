@@ -1,32 +1,21 @@
 import { Router } from 'express';
-import { container } from 'tsyringe';
+import { celebrate, Segments, Joi } from 'celebrate';
 
-import CreateCompanyService from '../../../services/CreateCompanyService';
-
-interface ICompanyHere {
-  name: string;
-  email: string;
-  password?: string;
-  company_type: 'MEI' | 'ME' | 'Startup';
-}
+import CompaniesController from '../controllers/CompaniesController';
 
 const companiesRoutes = Router();
+const companiesController = new CompaniesController();
 
-companiesRoutes.post('/', async (request, response) => {
-  const { name, email, password, company_type } = request.body;
-
-  const createCompany = container.resolve(CreateCompanyService);
-
-  const company: ICompanyHere = await createCompany.execute({
-    name,
-    email,
-    password,
-    company_type,
-  });
-
-  delete company.password;
-
-  return response.json(company);
-});
+companiesRoutes.post(
+  '/',
+  celebrate({
+    [Segments.BODY]: {
+      name: Joi.string().required(),
+      email: Joi.string().email().required(),
+      password: Joi.string().required(),
+    },
+  }),
+  companiesController.create,
+);
 
 export default companiesRoutes;
