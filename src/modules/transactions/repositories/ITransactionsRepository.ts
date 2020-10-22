@@ -3,6 +3,7 @@ import ICreateTransactionDTO from '../dtos/ICreateTransactionDTO';
 
 export default interface ITransactionsRepository {
   findTransactionBySameCard(
+    company_id: string,
     card_number: string,
   ): Promise<Transaction[] | undefined>;
   // Filtrar por data e por flags de crédito e débito
@@ -13,5 +14,5 @@ export default interface ITransactionsRepository {
     company_id: string,
     date: Date,
   ): Promise<Transaction | undefined>;
-  create(data: ICreateTransactionDTO): Promise<Transaction>;
+  createTransaction(data: ICreateTransactionDTO): Promise<Transaction>;
 }
