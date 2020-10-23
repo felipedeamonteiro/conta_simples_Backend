@@ -13,6 +13,7 @@ companiesRoutes.post(
       name: Joi.string().required(),
       email: Joi.string().email().required(),
       password: Joi.string().required(),
+      company_type: Joi.string().required(),
     },
   }),
   companiesController.create,
