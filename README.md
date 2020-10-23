@@ -14,6 +14,8 @@ In tests, it's used `Jest` and `Coverage` reports to help.
 
 To test the APIs it was used [`Insomnia`](https://insomnia.rest/) and [`DBeaver - v:7.2.1`](https://dbeaver.io/) as a database administration tool.
 
+The archtecture of the project is based in DDD (Domain Driven Design).
+
 ## - How to run the project
 
 ### Docker
