@@ -61,3 +61,72 @@ A message like this should appear in terminal:
 🤑️ Server started on port 3334!
 ```
 If so, enjoy the application!
+
+### Testing the APIs
+
+Here I will not teach how to use Insomia, because there are a lot of tutorials out there, but I liked [this one](https://www.youtube.com/watch?v=3tB0uDliS6Y). It's in portuguese.
+
+Here I'll show the best order of testing the API (from Top to Bottom), because after the second, all the others need to configure the token generated in the
+`Bearer Token` in Tab Auth in Insomia (the video tutorial shows how to do that. It's used because the next routes need authentication to be accessed).
+
+#### SignUp a company
+
+- Method: `POST`
+
+- Endpoint:
+```
+http://localhost:3334/companies
+```
+- Body: `JSON`:
+```
+{
+  TYPES:
+  name: string,
+  email: string + mail,
+  password: string + 6 char,
+  company_type: "MEI" | "ME" | "Startup"
+
+  EXAMPLE
+	"name": "Aprendiz Digital",
+	"email": "aprendizdigital@gmail.com",
+	"password": "123456",
+	"company_type": "Startup"
+}
+```
+And then `status 200` should come with the new company created data.
+
+#### SignIn
+
+- Method: `POST`
+
+- Endpoint:
+```
+http://localhost:3334/sessions
+```
+- Body: `JSON`:
+```
+{
+  TYPES:
+  email: string + mail,
+  password: string + 6 char
+
+  EXAMPLE
+	"email": "aprendizdigital@gmail.com",
+	"password": "123456",
+}
+```
+And then `status 200` should come with the company data and the `generated Token`.
+It's important to say that when created a new company, an account with `balance = 0.00` is generated as well.
+From now on, all the other routes need the generated token to access the routes.
+
+#### Checking Account Balance
+
+- Method: `GET`
+
+- Endpoint:
+```
+http://localhost:3334/accounts/balance
+```
+- Body: none
+
+And then `status 200` should come with the amount in balance.
