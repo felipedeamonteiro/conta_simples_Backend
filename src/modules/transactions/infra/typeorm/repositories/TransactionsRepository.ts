@@ -124,11 +124,8 @@ class TransactionRepository implements ITransactionsRepository {
       case 'Income':
         const newBalanceIncome =
           Number(account.balance) + Number(lastTransaction.total_value);
-        const incomeBalance = this.accountRepository.create({
-          company_id,
-          balance: newBalanceIncome,
-        });
-        await this.accountRepository.save(incomeBalance);
+        account.balance = newBalanceIncome;
+        await this.accountRepository.save(account);
         break;
       case 'Debit':
         if (account.balance < lastTransaction.total_value) {
@@ -138,11 +135,8 @@ class TransactionRepository implements ITransactionsRepository {
         }
         const newBalanceDebit =
           Number(account.balance) - Number(lastTransaction.total_value);
-        const debitBalance = this.accountRepository.create({
-          company_id,
-          balance: newBalanceDebit,
-        });
-        await this.accountRepository.save(debitBalance);
+        account.balance = newBalanceDebit;
+        await this.accountRepository.save(account);
         break;
       case 'Credit':
         if (!creditCard) {
@@ -160,11 +154,8 @@ class TransactionRepository implements ITransactionsRepository {
         const newBalanceCredit =
           Number(creditCard.current_limit) -
           Number(lastTransaction.total_value);
-        const creditBalance = this.accountRepository.create({
-          company_id,
-          balance: newBalanceCredit,
-        });
-        await this.creditCardRepository.save(creditBalance);
+        creditCard.current_limit = newBalanceCredit;
+        await this.creditCardRepository.save(creditCard);
         break;
       default:
         break;
