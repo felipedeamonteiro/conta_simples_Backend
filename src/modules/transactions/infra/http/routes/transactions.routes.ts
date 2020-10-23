@@ -3,19 +3,28 @@ import { Router } from 'express';
 import { celebrate, Segments, Joi } from 'celebrate';
 
 import ensureAuthenticated from '@modules/companies/infra/http/middleware/ensureAuthenticated';
-// importar controllers
+import TransactionsController from '../controllers/TransactionsController';
 
 const transactionsRouter = Router();
-// instanciar controllers
+const transactionsController = new TransactionsController();
 
 transactionsRouter.use(ensureAuthenticated);
 
 transactionsRouter.post(
   '/',
-  celebrate({ [Segments.BODY]: {} }),
-  Controller.method,
+  celebrate({
+    [Segments.BODY]: {
+      title: Joi.string().required(),
+      description: Joi.string(),
+      credit_card_number: Joi.number(),
+      currency: Joi.string().required(),
+      transaction_type: Joi.string().required(),
+      date: Joi.date().required(),
+      total_value: Joi.number().required(),
+      instalments: Joi.number(),
+    },
+  }),
+  transactionsController.create,
 );
-
-transactionsRouter.get('/', Controller.method);
 
 export default transactionsRouter;

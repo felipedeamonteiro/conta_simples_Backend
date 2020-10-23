@@ -3,6 +3,11 @@ import AppError from '@shared/errors/AppError';
 
 import ITransactionsRepository from '@modules/transactions/repositories/ITransactionsRepository';
 
+interface IRequest {
+  company_id: string;
+  credit_card_number: number | undefined;
+}
+
 @injectable()
 class CalculateBalanceAndLimitService {
   constructor(
@@ -10,10 +15,10 @@ class CalculateBalanceAndLimitService {
     private transactionsRepository: ITransactionsRepository,
   ) {}
 
-  public async execute(
-    company_id: string,
-    credit_card_number: number | undefined,
-  ): Promise<void> {
+  public async execute({
+    company_id,
+    credit_card_number,
+  }: IRequest): Promise<void> {
     const lastTransaction = await this.transactionsRepository.getLastAccountTransaction(
       company_id,
     );

@@ -60,10 +60,10 @@ class CreateTransactionService {
       );
     }
 
-    await calculateBalanceOrLimitService.execute(
+    await calculateBalanceOrLimitService.execute({
       company_id,
-      creditCard?.credit_card_number,
-    );
+      credit_card_number,
+    });
 
     const accountBalance = await this.accountRepository.getBalance(company_id);
 
@@ -96,10 +96,10 @@ class CreateTransactionService {
         instalment_value: total_value / instalments,
       });
 
-      await calculateBalanceOrLimitService.execute(
+      await calculateBalanceOrLimitService.execute({
         company_id,
-        creditCard?.credit_card_number,
-      );
+        credit_card_number,
+      });
 
       return transaction;
     }
@@ -126,10 +126,10 @@ class CreateTransactionService {
       instalment_value: 0,
     });
 
-    await calculateBalanceOrLimitService.execute(
+    await calculateBalanceOrLimitService.execute({
       company_id,
-      creditCard?.credit_card_number,
-    );
+      credit_card_number,
+    });
 
     return transaction;
   }

@@ -1,38 +1,23 @@
 import { Router } from 'express';
-import { getRepository } from 'typeorm';
+import { celebrate, Segments, Joi } from 'celebrate';
 
 import ensureAuthenticated from '@modules/companies/infra/http/middleware/ensureAuthenticated';
-import CreateCreditCardService from '../../../services/CreateCreditCardService';
 
-import CreditCard from '../../typeorm/entities/CreditCard';
+import CreditCardsController from '../controllers/CreditCardsController';
 
 const creditCardRouter = Router();
+const creditCardController = new CreditCardsController();
 
 creditCardRouter.use(ensureAuthenticated);
 
-creditCardRouter.post('/', async (request, response) => {
-  const company_id = request.company.id;
-  const { total_limit } = request.body;
-
-  const createCard = new CreateCreditCardService();
-
-  const creditCard = await createCard.execute({
-    company_id,
-    total_limit,
-  });
-
-  return response.json(creditCard);
-});
-
-creditCardRouter.get('/', async (request, response) => {
-  const creditCardRepository = getRepository(CreditCard);
-  const company_id = request.company.id;
-
-  const creditCards = await creditCardRepository.find({
-    where: { company_id },
-  });
-
-  return response.json(creditCards);
-});
+creditCardRouter.post(
+  '/',
+  celebrate({
+    [Segments.BODY]: {
+      total_limit: Joi.number().required(),
+    },
+  }),
+  creditCardController.create,
+);
 
 export default creditCardRouter;

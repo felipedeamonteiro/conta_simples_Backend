@@ -11,7 +11,7 @@ export default class BallanceController {
 
     const balanceOrLimit = container.resolve(CalculateBalanceOrLimitService);
 
-    await balanceOrLimit.execute(company_id, credit_card_number);
+    await balanceOrLimit.execute({ company_id, credit_card_number });
 
     return response.json(classToClass(balanceOrLimit));
   }
