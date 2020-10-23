@@ -1,1 +1,11 @@
 node_modules
+.idea/
+.vscode/
+.build/
+temp/
+.env
+ormconfig.json
+
+tmp/*
+!tmp/.gitkeep
+coverage
