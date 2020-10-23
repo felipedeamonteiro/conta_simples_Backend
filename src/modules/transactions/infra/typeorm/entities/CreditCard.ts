@@ -21,7 +21,7 @@ class CreditCard {
   current_limit: number;
 
   @Column('int')
-  credit_card_number: number;
+  card_number: number | undefined;
 
   @CreateDateColumn()
   created_at: Date;

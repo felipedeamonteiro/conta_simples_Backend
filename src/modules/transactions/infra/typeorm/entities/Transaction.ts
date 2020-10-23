@@ -35,7 +35,7 @@ class Transaction {
   transaction_type: 'Credit' | 'Debit' | 'Income';
 
   @Column('int')
-  credit_card_number: number;
+  card_number: number;
 
   @Column()
   currency: string;

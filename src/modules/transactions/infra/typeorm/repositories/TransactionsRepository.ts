@@ -25,10 +25,10 @@ class TransactionRepository implements ITransactionsRepository {
 
   public async findTransactionBySameCard(
     company_id: string,
-    credit_card_number: number,
+    card_number: number,
   ): Promise<Transaction[] | undefined> {
     const findTransaction = await this.ormRepository.find({
-      where: { credit_card_number, company_id },
+      where: { card_number, company_id },
     });
 
     if (!findTransaction) {
@@ -77,7 +77,7 @@ class TransactionRepository implements ITransactionsRepository {
     company_id,
     title,
     description,
-    credit_card_number,
+    card_number,
     currency,
     transaction_type,
     date,
@@ -89,7 +89,7 @@ class TransactionRepository implements ITransactionsRepository {
       company_id,
       title,
       description,
-      credit_card_number,
+      card_number,
       currency,
       transaction_type,
       date,
@@ -106,7 +106,7 @@ class TransactionRepository implements ITransactionsRepository {
   public async calculateBalanceOrLimitBasedOnLastTransaction(
     lastTransaction: Transaction,
     company_id: string,
-    credit_card_number: number,
+    card_number: number,
   ): Promise<void> {
     const account = await this.accountRepository.findOne({
       where: { company_id },
@@ -117,7 +117,7 @@ class TransactionRepository implements ITransactionsRepository {
     }
 
     const creditCard = await this.creditCardRepository.findOne({
-      where: { company_id, credit_card_number },
+      where: { company_id, card_number },
     });
 
     switch (lastTransaction.transaction_type) {

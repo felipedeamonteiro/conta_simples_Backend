@@ -32,7 +32,7 @@ export default class CreateCreditCard1602882166106
             scale: 2,
           },
           {
-            name: 'credit_card_number',
+            name: 'card_number',
             type: 'int',
           },
           {

@@ -7,11 +7,11 @@ import CalculateBalanceOrLimitService from '@modules/transactions/services/Calcu
 export default class BallanceController {
   public async index(request: Request, response: Response): Promise<Response> {
     const company_id = request.company.id;
-    const { credit_card_number } = request.body;
+    const { card_number } = request.body;
 
     const balanceOrLimit = container.resolve(CalculateBalanceOrLimitService);
 
-    await balanceOrLimit.execute({ company_id, credit_card_number });
+    await balanceOrLimit.execute({ company_id, card_number });
 
     return response.json(classToClass(balanceOrLimit));
   }

@@ -16,7 +16,7 @@ transactionsRouter.post(
     [Segments.BODY]: {
       title: Joi.string().required(),
       description: Joi.string(),
-      credit_card_number: Joi.number(),
+      card_number: Joi.number(),
       currency: Joi.string().required(),
       transaction_type: Joi.string().required(),
       date: Joi.date().required(),

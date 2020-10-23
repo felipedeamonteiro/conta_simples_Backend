@@ -26,7 +26,7 @@ class CreateCreditCardService {
       company_id,
       total_limit,
       current_limit: total_limit,
-      credit_card_number: cardsQuantity + 1,
+      card_number: cardsQuantity + 1,
     });
 
     return creditCard;

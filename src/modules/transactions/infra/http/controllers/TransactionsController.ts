@@ -10,7 +10,7 @@ export default class TransactionController {
     const {
       title,
       description,
-      credit_card_number,
+      card_number,
       currency,
       transaction_type,
       date,
@@ -24,7 +24,7 @@ export default class TransactionController {
       company_id,
       title,
       description,
-      credit_card_number,
+      card_number,
       currency,
       transaction_type,
       date,

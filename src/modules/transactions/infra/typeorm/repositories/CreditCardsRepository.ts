@@ -17,13 +17,13 @@ class CreditCardsRepository implements ICreditCardsRepository {
   public async create({
     company_id,
     total_limit,
-    credit_card_number,
+    card_number,
     current_limit,
   }: ICreateCreditCardDTO): Promise<CreditCard> {
     const creditCard = this.ormRepository.create({
       company_id,
       total_limit,
-      credit_card_number,
+      card_number,
       current_limit,
     });
 
@@ -34,10 +34,10 @@ class CreditCardsRepository implements ICreditCardsRepository {
 
   public async getCurrentLimitAndTotalLimit({
     company_id,
-    credit_card_number,
+    card_number,
   }: IGetCreditCardLimitsDTO): Promise<CreditCard> {
     const creditCard = await this.ormRepository.findOne({
-      where: { company_id, credit_card_number },
+      where: { company_id, card_number },
     });
 
     if (!creditCard) {

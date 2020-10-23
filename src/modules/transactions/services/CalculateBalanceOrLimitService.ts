@@ -5,7 +5,7 @@ import ITransactionsRepository from '@modules/transactions/repositories/ITransac
 
 interface IRequest {
   company_id: string;
-  credit_card_number: number | undefined;
+  card_number: number | undefined;
 }
 
 @injectable()
@@ -15,15 +15,12 @@ class CalculateBalanceAndLimitService {
     private transactionsRepository: ITransactionsRepository,
   ) {}
 
-  public async execute({
-    company_id,
-    credit_card_number,
-  }: IRequest): Promise<void> {
+  public async execute({ company_id, card_number }: IRequest): Promise<void> {
     const lastTransaction = await this.transactionsRepository.getLastAccountTransaction(
       company_id,
     );
 
-    if (credit_card_number) {
+    if (card_number) {
       if (!lastTransaction) {
         throw new AppError('There is no transactions for this account yet.');
       }
@@ -31,7 +28,7 @@ class CalculateBalanceAndLimitService {
       const balanceOrLimit = await this.transactionsRepository.calculateBalanceOrLimitBasedOnLastTransaction(
         lastTransaction,
         company_id,
-        credit_card_number,
+        card_number,
       );
 
       return balanceOrLimit;
@@ -44,7 +41,7 @@ class CalculateBalanceAndLimitService {
     const balanceOrLimit = await this.transactionsRepository.calculateBalanceOrLimitBasedOnLastTransaction(
       lastTransaction,
       company_id,
-      credit_card_number,
+      card_number,
     );
 
     return balanceOrLimit;

@@ -13,7 +13,7 @@ interface IRequest {
   company_id: string;
   title: string;
   description?: string;
-  credit_card_number?: number;
+  card_number?: number | undefined;
   currency: string;
   transaction_type: 'Credit' | 'Debit' | 'Income';
   date: string;
@@ -38,7 +38,7 @@ class CreateTransactionService {
     company_id,
     title,
     description,
-    credit_card_number = 0,
+    card_number = 0,
     currency,
     transaction_type,
     date,
@@ -51,7 +51,7 @@ class CreateTransactionService {
 
     const creditCard = await this.creditCardRepository.findCardByCompanyIdAndByCardNumber(
       company_id,
-      credit_card_number,
+      card_number,
     );
 
     if (!creditCard && transaction_type !== 'Income') {
@@ -62,7 +62,7 @@ class CreateTransactionService {
 
     await calculateBalanceOrLimitService.execute({
       company_id,
-      credit_card_number,
+      card_number,
     });
 
     const accountBalance = await this.accountRepository.getBalance(company_id);
@@ -87,7 +87,7 @@ class CreateTransactionService {
         company_id,
         title,
         description,
-        credit_card_number,
+        card_number,
         currency,
         transaction_type,
         date: parsedDate,
@@ -98,7 +98,7 @@ class CreateTransactionService {
 
       await calculateBalanceOrLimitService.execute({
         company_id,
-        credit_card_number,
+        card_number,
       });
 
       return transaction;
@@ -117,7 +117,7 @@ class CreateTransactionService {
       company_id,
       title,
       description,
-      credit_card_number,
+      card_number,
       currency,
       transaction_type,
       date: parsedDate,
@@ -128,7 +128,7 @@ class CreateTransactionService {
 
     await calculateBalanceOrLimitService.execute({
       company_id,
-      credit_card_number,
+      card_number,
     });
 
     return transaction;

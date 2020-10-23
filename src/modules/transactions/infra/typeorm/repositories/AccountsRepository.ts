@@ -37,6 +37,7 @@ class AccountRepository implements IAccountsRepository {
 
     const account = this.ormRepository.create({
       company_id: data.company_id,
+      balance: 0,
     });
 
     await this.ormRepository.save(account);
