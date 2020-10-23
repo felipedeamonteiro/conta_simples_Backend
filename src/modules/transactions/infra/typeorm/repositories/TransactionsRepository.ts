@@ -122,7 +122,8 @@ class TransactionRepository implements ITransactionsRepository {
 
     switch (lastTransaction.transaction_type) {
       case 'Income':
-        const newBalanceIncome = account.balance + lastTransaction.total_value;
+        const newBalanceIncome =
+          Number(account.balance) + Number(lastTransaction.total_value);
         const incomeBalance = this.accountRepository.create({
           company_id,
           balance: newBalanceIncome,
@@ -135,7 +136,8 @@ class TransactionRepository implements ITransactionsRepository {
             'You do not have enough balance to make this transaction.',
           );
         }
-        const newBalanceDebit = account.balance - lastTransaction.total_value;
+        const newBalanceDebit =
+          Number(account.balance) - Number(lastTransaction.total_value);
         const debitBalance = this.accountRepository.create({
           company_id,
           balance: newBalanceDebit,
@@ -148,13 +150,16 @@ class TransactionRepository implements ITransactionsRepository {
             'You do not have a credit card to make this transaction.',
           );
         }
-        if (creditCard.current_limit < lastTransaction.total_value) {
+        if (
+          Number(creditCard.current_limit) < Number(lastTransaction.total_value)
+        ) {
           throw new AppError(
             'You do not have enough limit to make this transaction.',
           );
         }
         const newBalanceCredit =
-          creditCard.current_limit - lastTransaction.total_value;
+          Number(creditCard.current_limit) -
+          Number(lastTransaction.total_value);
         const creditBalance = this.accountRepository.create({
           company_id,
           balance: newBalanceCredit,

@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
-import { classToClass } from 'class-transformer';
 
 import GetBalanceService from '@modules/transactions/services/GetBalanceService';
 
@@ -10,8 +9,8 @@ export default class BallanceController {
 
     const getBalance = container.resolve(GetBalanceService);
 
-    await getBalance.execute(company_id);
+    const balance = await getBalance.execute(company_id);
 
-    return response.json(classToClass(getBalance));
+    return response.json(balance);
   }
 }

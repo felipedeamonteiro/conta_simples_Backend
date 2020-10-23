@@ -1,11 +1,10 @@
-import { parseISO } from 'date-fns';
 import { injectable, inject, container } from 'tsyringe';
 
 import CalculateBalanceAOrLimitService from '@modules/transactions/services/CalculateBalanceOrLimitService';
 import AppError from '@shared/errors/AppError';
 import Transaction from '../infra/typeorm/entities/Transaction';
 
-import ITransactionRepository from '../repositories/ITransactionsRepository';
+import ITransactionsRepository from '../repositories/ITransactionsRepository';
 import ICreditCardsRepository from '../repositories/ICreditCardsRepository';
 import IAccountsRepository from '../repositories/IAccountsRepository';
 
@@ -16,7 +15,7 @@ interface IRequest {
   card_number?: number | undefined;
   currency: string;
   transaction_type: 'Credit' | 'Debit' | 'Income';
-  date: string;
+  date: Date;
   total_value: number;
   instalments?: number;
 }
@@ -25,7 +24,7 @@ interface IRequest {
 class CreateTransactionService {
   constructor(
     @inject('TransactionsRepository')
-    private transactionRepository: ITransactionRepository,
+    private transactionsRepository: ITransactionsRepository,
 
     @inject('CreditCardsRepository')
     private creditCardRepository: ICreditCardsRepository,
@@ -60,10 +59,16 @@ class CreateTransactionService {
       );
     }
 
-    await calculateBalanceOrLimitService.execute({
+    const transactions = await this.transactionsRepository.getAllAccountTransactions(
       company_id,
-      card_number,
-    });
+    );
+
+    if (transactions && transactions.length > 0) {
+      await calculateBalanceOrLimitService.execute({
+        company_id,
+        card_number,
+      });
+    }
 
     const accountBalance = await this.accountRepository.getBalance(company_id);
 
@@ -75,7 +80,7 @@ class CreateTransactionService {
 
     const creditCardLimit = creditCard?.current_limit;
 
-    const parsedDate = parseISO(date);
+    // const parsedDate = parseISO(date);
 
     if (transaction_type === 'Credit' && creditCardLimit) {
       if (creditCardLimit < total_value) {
@@ -83,14 +88,14 @@ class CreateTransactionService {
           'You do not have enough limit to make this transaction.',
         );
       }
-      const transaction = await this.transactionRepository.createTransaction({
+      const transaction = await this.transactionsRepository.createTransaction({
         company_id,
         title,
         description,
         card_number,
         currency,
         transaction_type,
-        date: parsedDate,
+        date,
         total_value,
         instalments,
         instalment_value: total_value / instalments,
@@ -113,14 +118,14 @@ class CreateTransactionService {
       );
     }
 
-    const transaction = await this.transactionRepository.createTransaction({
+    const transaction = await this.transactionsRepository.createTransaction({
       company_id,
       title,
       description,
       card_number,
       currency,
       transaction_type,
-      date: parsedDate,
+      date,
       total_value,
       instalments,
       instalment_value: 0,
