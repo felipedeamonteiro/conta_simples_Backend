@@ -3,6 +3,7 @@ import { container } from 'tsyringe';
 import { classToClass } from 'class-transformer';
 
 import CreateTransactionService from '@modules/transactions/services/CreateTransactionService';
+import GetAllTransactionsService from '@modules/transactions/services/GetAllTransactionsService';
 
 export default class TransactionController {
   public async create(request: Request, response: Response): Promise<Response> {
@@ -33,5 +34,15 @@ export default class TransactionController {
     });
 
     return response.json(classToClass(transaction));
+  }
+
+  public async index(request: Request, response: Response): Promise<Response> {
+    const company_id = request.company.id;
+
+    const getTransactions = container.resolve(GetAllTransactionsService);
+
+    const transactions = await getTransactions.execute(company_id);
+
+    return response.json(classToClass(transactions));
   }
 }

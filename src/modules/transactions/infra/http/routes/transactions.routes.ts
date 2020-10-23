@@ -4,9 +4,11 @@ import { celebrate, Segments, Joi } from 'celebrate';
 
 import ensureAuthenticated from '@modules/companies/infra/http/middleware/ensureAuthenticated';
 import TransactionsController from '../controllers/TransactionsController';
+import LastTransactionController from '../controllers/LastTransactionController';
 
 const transactionsRouter = Router();
 const transactionsController = new TransactionsController();
+const lastTransactionsController = new LastTransactionController();
 
 transactionsRouter.use(ensureAuthenticated);
 
@@ -26,5 +28,8 @@ transactionsRouter.post(
   }),
   transactionsController.create,
 );
+
+transactionsRouter.get('/', transactionsController.index);
+transactionsRouter.get('/last', lastTransactionsController.index);
 
 export default transactionsRouter;
