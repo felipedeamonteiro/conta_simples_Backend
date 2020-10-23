@@ -263,3 +263,10 @@ http://localhost:3334/transactions/last
 - Body: None
 
 And then `status 200` should come with last transaction data of that account.
+
+## Tests
+
+They are not ready yet, but to run them:
+```
+yarn test
+```
