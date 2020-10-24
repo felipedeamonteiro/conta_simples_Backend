@@ -25,6 +25,8 @@ class FakeCompanyRepository implements ICompanyRepository {
 
     Object.assign(company, { id: uuid() }, companyData);
 
+    this.companies.push(company);
+
     return company;
   }
 

@@ -1,4 +1,4 @@
-// import AppError from '@shared/errors/AppError';
+import AppError from '@shared/errors/AppError';
 
 import FakeAccountRepository from '@modules/transactions/repositories/fakes/FakeAccountsRepository';
 import FakeCompaniesRepository from '../repositories/fakes/FakeCompaniesRepository';
@@ -49,6 +49,6 @@ describe('CreateCompany', () => {
         password: '123456',
         company_type: 'ME',
       }),
-    ).rejects.toBeInstanceOf(Error);
+    ).rejects.toBeInstanceOf(AppError);
   });
 });
