@@ -266,7 +266,7 @@ And then `status 200` should come with last transaction data of that account.
 
 ## Tests
 
-They are not ready yet, but to run them:
+They are not completely ready yet, but to run them:
 ```
 yarn test
 ```
