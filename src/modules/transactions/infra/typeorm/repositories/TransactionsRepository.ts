@@ -128,7 +128,7 @@ class TransactionRepository implements ITransactionsRepository {
         await this.accountRepository.save(account);
         break;
       case 'Debit':
-        if (account.balance < lastTransaction.total_value) {
+        if (Number(account.balance) < Number(lastTransaction.total_value)) {
           throw new AppError(
             'You do not have enough balance to make this transaction.',
           );

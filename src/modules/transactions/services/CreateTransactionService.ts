@@ -113,6 +113,7 @@ class CreateTransactionService {
       (!accountBalance || accountBalance < total_value) &&
       transaction_type !== 'Income'
     ) {
+      console.log('Create Transaction Service');
       throw new AppError(
         'You do not have enough balance to make this transaction.',
       );
