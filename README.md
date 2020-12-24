@@ -39,7 +39,7 @@ To visualize the database with Dbeaver, open it and click:
 A window will open with tab `Main`. There you should set:
 - Host: localhost
 - Port: 5434
-- Database: postgres
+- Database: conta_simples
 - Username: postgres
 - Password: docker
 
