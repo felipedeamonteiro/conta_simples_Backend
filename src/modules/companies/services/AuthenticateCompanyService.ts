@@ -49,6 +49,10 @@ class AuthenticateCompanyService {
 
     const { secret, expiresIn } = authConfig.jwt;
 
+    if (!secret) {
+      throw new AppError('secretOrPrivateKey must have a value', 401);
+    }
+
     const token = sign({}, secret, {
       subject: company.id,
       expiresIn,
